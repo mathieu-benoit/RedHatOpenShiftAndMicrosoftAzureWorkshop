@@ -1,8 +1,8 @@
 # RedHatOpenShiftAndMicrosoftAzureWorkshop
 
-##Context
+## Context
 
-##Database
+## Database
 
 The database is SQL Server 2017 to illustrate its support on Linux and especially on Linux Containers.
 
@@ -15,7 +15,7 @@ Run the Docker image from the public image:
 
 `kubectl exec -ti sql bash`
 
-##Web
+## Web
 
 The web application is a simple dashboard to interact with Sql Server 2017 to demonstrate the AutoTuning feature.
 
@@ -30,14 +30,14 @@ Build the Docker image locally:
 Run the Docker image from the public image:
 - Docker run mabenoit/...
 
-##OpenShift
+## OpenShift
 
 TODO
 
-##VSTS
+## VSTS
 
 TODO
 
-##OSBA
+## OSBA
 
 TODO
