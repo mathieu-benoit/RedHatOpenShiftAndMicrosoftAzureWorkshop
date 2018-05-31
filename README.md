@@ -13,7 +13,7 @@ docker run \
   -e 'SA_PASSWORD=<sa-password>' \
   -p 1433:1433 \
   --name <container-name> \
-  -d <image-name>
+  -d mabenoit/my-mssql-linux
 ```
 
 Open a bash session within this container:
@@ -32,6 +32,7 @@ cd usr/share/wwi-db-setup/
 
 Optional - if you would like you could build the Docker image locally:
 ```
+cd SqlServerAutoTuningDashboard
 docker build \
   -t <image-name> \
   -f Dockerfile-Sql \
