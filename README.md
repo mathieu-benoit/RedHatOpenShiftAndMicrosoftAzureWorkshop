@@ -6,14 +6,37 @@
 
 The database is SQL Server 2017 to illustrate its support on Linux and especially on Linux Containers.
 
-Build the Docker image locally:
-- Git clone
-- Docker build
-
 Run the Docker image from the public image:
-- Docker run mabenoit/...
+```
+docker run \
+  -e 'ACCEPT_EULA=Y' \
+  -e 'SA_PASSWORD=<sa-password>' \
+  -p 1433:1433 \
+  --name <container-name> \
+  -d <image-name>
+```
 
-`kubectl exec -ti sql bash`
+Open a bash session within this container:
+```
+docker exec \
+  -it sqllinux \
+  bash
+```
+
+Go to the folder containing the scripts to run and execute them:
+```
+cd usr/share/wwi-db-setup/
+./restore-db.sh SA <sa-password>
+./init-db.sh SA <sa-password>
+```
+
+Optional - if you would like you could build the Docker image locally:
+```
+docker build \
+  -t <image-name> \
+  -f Dockerfile-Sql \
+  .
+```
 
 ## Web
 
