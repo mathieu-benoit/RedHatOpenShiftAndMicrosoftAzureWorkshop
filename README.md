@@ -19,7 +19,7 @@ docker run \
 Open a bash session within this container:
 ```
 docker exec \
-  -it sqllinux \
+  -it <container-name> \
   bash
 ```
 
