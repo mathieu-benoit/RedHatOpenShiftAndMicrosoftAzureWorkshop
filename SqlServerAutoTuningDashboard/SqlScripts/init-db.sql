@@ -1,4 +1,5 @@
-﻿-- Insert one OrderLine that with PackageTypeID=(0) will cause regression
+﻿USE WideWorldImporters;
+-- Insert one OrderLine that with PackageTypeID=(0) will cause regression
 INSERT INTO Warehouse.PackageTypes (PackageTypeID, PackageTypeName, LastEditedBy)
 VALUES (0, 'FLGP', 1);
 
