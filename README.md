@@ -18,6 +18,11 @@ TOC:
 
 The database is SQL Server 2017 to illustrate its support on Linux and especially on Linux Containers.
 
+Pull the lastest version of the Docker image from the public image:
+```
+docker pull mabenoit/my-mssql-linux:latest
+```
+
 Run the Docker image from the public image:
 ```
 docker run \
@@ -25,7 +30,7 @@ docker run \
   -e 'SA_PASSWORD=<sa-password>' \
   -p 1433:1433 \
   --name <container-name> \
-  -d mabenoit/my-mssql-linux
+  -d mabenoit/my-mssql-linux:latest
 ```
 
 Open a bash session within this container:
@@ -53,20 +58,23 @@ docker build \
 
 ## Web
 
-TODO TODO
-
 The web application is a simple dashboard to interact with Sql Server 2017 to demonstrate the AutoTuning feature.
 
-This web application is coming from this repository below + few updates with ASP.NET Core 2.0 and some simplifications + Docker support.
+This web application is coming from [this repository](https://github.com/Microsoft/sql-server-samples/tree/master/samples/features/automatic-tuning/force-last-good-plan) + few updates with ASP.NET Core 2.0 and some simplifications + Docker support.
 
-https://github.com/Microsoft/sql-server-samples/tree/master/samples/features/automatic-tuning/force-last-good-plan
-
-Build the Docker image locally:
-- Git clone
-- Docker run
+Pull the lastest version of the Docker image from the public image:
+```
+docker pull mabenoit/sql-autotune-dashboard:latest
+```
 
 Run the Docker image from the public image:
-- Docker run mabenoit/...
+```
+docker run \
+  -e 'ConnectionStrings:Wwi=Server=<server-address>,1433;Database=WideWorldImporters;User Id=SA;Password=<sa-password>;' \
+  -p 80:80 \
+  --name webdashboard \
+  -d mabenoit/sql-autotune-dashboard:latest
+```
 
 # VSTS
 
