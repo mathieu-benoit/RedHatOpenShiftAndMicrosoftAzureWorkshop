@@ -3,6 +3,7 @@ queue:
   condition: succeeded()
 variables:
     BuildConfiguration: release
+    DotNetCorePackagingFolder: 'pub'
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restore
@@ -19,17 +20,19 @@ steps:
   inputs:
     command: publish
     publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-    zipAfterPublish: True
+    arguments: '--configuration $(BuildConfiguration) --output $(DotNetCorePackagingFolder)'
+    zipAfterPublish: false
+    modifyOutputPath: false
 - task: Docker@0
   displayName: Build Web image
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryConnection: MyDockerHub
     dockerFile: 'SqlServerAutoTuningDashboard/Dockerfile-Web'
+    buildArguments: 'source=$(DotNetCorePackagingFolder)'
     defaultContext: false
     context: SqlServerAutoTuningDashboard
-    imageName: 'sql-autotune-dashboard:$(Build.BuildId)'
+    imageName: 'mabenoit/sql-autotune-dashboard:$(Build.BuildId)'
     includeLatestTag: true
 - task: Docker@0
   displayName: Push Web image
@@ -37,7 +40,7 @@ steps:
     containerregistrytype: 'Container Registry'
     dockerRegistryConnection: MyDockerHub
     action: 'Push an image'
-    imageName: 'sql-autotune-dashboard:$(Build.BuildId)'
+    imageName: 'mabenoit/sql-autotune-dashboard:$(Build.BuildId)'
     includeLatestTag: true
 - task: Docker@0
   displayName: Build Sql image
@@ -47,7 +50,7 @@ steps:
     dockerFile: 'SqlServerAutoTuningDashboard/Dockerfile-Sql'
     defaultContext: false
     context: SqlServerAutoTuningDashboard
-    imageName: 'my-mssql-linux:$(Build.BuildId)'
+    imageName: 'mabenoit/my-mssql-linux:$(Build.BuildId)'
     includeLatestTag: true
 - task: Docker@0
   displayName: Push Sql image
@@ -55,5 +58,5 @@ steps:
     containerregistrytype: 'Container Registry'
     dockerRegistryConnection: MyDockerHub
     action: 'Push an image'
-    imageName: 'my-mssql-linux:$(Build.BuildId)'
+    imageName: 'mabenoit/my-mssql-linux:$(Build.BuildId)'
     includeLatestTag: true

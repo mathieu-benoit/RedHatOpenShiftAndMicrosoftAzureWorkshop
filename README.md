@@ -1,6 +1,18 @@
-# RedHatOpenShiftAndMicrosoftAzureWorkshop
+# Context
 
-## Context
+TODO
+
+TOC:
+- [Context](#context)
+- [Docker](#docker)
+  - [Database](#database)
+  - [Web](#web)
+- [VSTS](#vsts)
+  - [Build](#build)
+  - [Release](#release)
+- [OSBA](#osba)
+
+# Docker
 
 ## Database
 
@@ -41,6 +53,8 @@ docker build \
 
 ## Web
 
+TODO TODO
+
 The web application is a simple dashboard to interact with Sql Server 2017 to demonstrate the AutoTuning feature.
 
 This web application is coming from this repository below + few updates with ASP.NET Core 2.0 and some simplifications + Docker support.
@@ -54,14 +68,29 @@ Build the Docker image locally:
 Run the Docker image from the public image:
 - Docker run mabenoit/...
 
-## OpenShift
+# VSTS
 
-TODO
+## Build
 
-## VSTS
+Prerequisities:
+- You need a Connection endpoint in VSTS to your Container Registry (ACR, DockerHub, etc.) to be able to push your image built
 
-TODO
+High level steps:
+- .NET Core - Restore packages
+- .NET Core - Build Web app
+- .NET Core - Package Web app
+- Docker - Build Web image
+- Docker - Push Web image
+- Docker - Build Sql image
+- Docker - Push Sql image
 
-## OSBA
+See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
+
+## Release
+
+Prerequisities:
+- You need an OpenShift cluster...
+
+# OSBA
 
 TODO
