@@ -4,6 +4,7 @@ TODO
 
 TOC:
 - [Context](#context)
+- [VM](#vm)
 - [Docker](#docker)
   - [Database](#database)
   - [Web](#web)
@@ -11,6 +12,10 @@ TOC:
   - [Build](#build)
   - [Release](#release)
 - [OSBA](#osba)
+
+# VM
+
+TODO
 
 # Docker
 
@@ -43,7 +48,6 @@ docker exec \
 Go to the folder containing the scripts to run and execute them:
 ```
 cd usr/share/wwi-db-setup/
-./restore-db.sh SA <sa-password>
 ./init-db.sh SA <sa-password>
 ```
 
@@ -76,11 +80,21 @@ docker run \
   -d mabenoit/sql-autotune-dashboard:latest
 ```
 
+Optional - if you would like you could build the Docker image locally:
+```
+cd SqlServerAutoTuningDashboard
+docker build \
+  -t <image-name> \
+  -f Dockerfile-Web \
+  .
+```
+
 # VSTS
 
 ## Build
 
 Prerequisities:
+- You need a VSTS account and project
 - You need a Connection endpoint in VSTS to your Container Registry (ACR, DockerHub, etc.) to be able to push your image built
 
 High level steps:
