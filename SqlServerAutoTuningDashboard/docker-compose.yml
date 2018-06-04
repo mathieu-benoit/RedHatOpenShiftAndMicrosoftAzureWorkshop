@@ -1,0 +1,17 @@
+version: '1'
+services:
+  web:
+    depends_on:
+       - sql
+    image: mabenoit/sql-autotune-dashboard:latest
+    environment:
+      - ConnectionStrings:Wwi: "Server=sql,1434;Database=WideWorldImporters;User Id=SA;Password=Your_password123;"
+    ports:
+      - "80:80"
+  sql:
+    image: mabenoit/my-mssql-linux:latest
+    environment:
+      - ACCEPT_EULA: Y
+      - SA_PASSWORD: Your_password123
+    ports:
+      - "1434:1433"
