@@ -12,6 +12,7 @@ TOC:
   - [Build](#build)
   - [Release](#release)
 - [OSBA](#osba)
+- [Resources](#resources)
 
 # VM
 
@@ -45,10 +46,9 @@ docker exec \
   bash
 ```
 
-Go to the folder containing the scripts to run and execute them:
+Go to the folder containing the scripts to run and execute this command:
 ```
-cd usr/share/wwi-db-setup/
-./init-db.sh SA <sa-password>
+usr/share/wwi-db-setup/init-db.sh
 ```
 
 Optional - if you would like you could build the Docker image locally:
@@ -116,3 +116,6 @@ Prerequisities:
 # OSBA
 
 TODO
+
+# Resources
+- [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
