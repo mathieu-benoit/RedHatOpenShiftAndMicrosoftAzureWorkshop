@@ -46,7 +46,7 @@ docker exec \
   bash
 ```
 
-Go to the folder containing the scripts to run and execute this command:
+And execute this command to initialize the database:
 ```
 usr/share/wwi-db-setup/init-db.sh
 ```
