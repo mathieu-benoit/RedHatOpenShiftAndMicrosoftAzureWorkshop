@@ -18,14 +18,14 @@ TOC:
 
 To host this demo, a virtual machine running RedHat Enterprise Linux 7.4 was created in Azure using the following overall process:
 
-1 (#1) - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine
-2 (#2) - Connect to the RHEL74 VM using SSH.
-3 (#3) - Install SQL Server 2017 using RHEL's YUM package manager.
-4 (#4) - Restore the WideWorldImporters Full Database Backup 
-5 (#5) - Run init-db.sh script to prime the database for the demo.
-6 (#6) - Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
-7 (#7) - Configure the Network Security Group to allow incoming network traffic on the port exposed by the "Web Dashboard Application", (88 in our case).
-8 (#8) - Access and use the "Web Dashboard Application" to demo SQL Server 2017 new Automatic Tuning capability.
+1. (#1) - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine
+2. (#2) - Connect to the RHEL74 VM using SSH.
+3. (#3) - Install SQL Server 2017 using RHEL's YUM package manager.
+4. (#4) - Restore the WideWorldImporters Full Database Backup 
+5. (#5) - Run init-db.sh script to prime the database for the demo.
+6. (#6) - Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
+7. (#7) - Configure the Network Security Group to allow incoming network traffic on the port exposed by the "Web Dashboard Application", (88 in our case).
+8. (#8) - Access and use the "Web Dashboard Application" to demo SQL Server 2017 new Automatic Tuning capability.
 
 ## 1 - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine using the following details on the Azure Portal (https://portal.azure.com/):
   1) Search the Azure Market Place tamplates for "RedHat Enterprise Linux 7.4" 
