@@ -18,16 +18,16 @@ TOC:
 
 To host this demo, a virtual machine running RedHat Enterprise Linux 7.4 was created in Azure using the following overall process:
 
-I (#I) - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine
-II (#II) - Connect to the RHEL74 VM using SSH.
-III (#III) - Install SQL Server 2017 using RHEL's YUM package manager.
-IV (#IV) - Restore the WideWorldImporters Full Database Backup 
-V (#V) - Run init-db.sh script to prime the database for the demo.
-VI (#VI) - Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
-VII (#VII) - Configure the Network Security Group to allow incoming network traffic on the port exposed by the "Web Dashboard Application", (88 in our case).
-VIII (#VIII) - Access and use the "Web Dashboard Application" to demo SQL Server 2017 new Automatic Tuning capability.
+1 (#1) - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine
+2 (#2) - Connect to the RHEL74 VM using SSH.
+3 (#3) - Install SQL Server 2017 using RHEL's YUM package manager.
+4 (#4) - Restore the WideWorldImporters Full Database Backup 
+5 (#5) - Run init-db.sh script to prime the database for the demo.
+6 (#6) - Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
+7 (#7) - Configure the Network Security Group to allow incoming network traffic on the port exposed by the "Web Dashboard Application", (88 in our case).
+8 (#8) - Access and use the "Web Dashboard Application" to demo SQL Server 2017 new Automatic Tuning capability.
 
-## I - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine using the following details on the Azure Portal (https://portal.azure.com/):
+## 1 - Provision the Red Hat Enterprise Linux 7.4 (RHEL74) virtual machine using the following details on the Azure Portal (https://portal.azure.com/):
   1) Search the Azure Market Place tamplates for "RedHat Enterprise Linux 7.4" 
   2) Depending on the experience you are looking for, you can either 
     a) select the "RedHat Enterprise Linux 7.4" virtual machine template from Red Hat if you want to manually install SQL Server 2017 over RHEL 7.4 yourself (instructions below as this is what we selected for the first demo to showcase how easy it is to install SQL Server 2017 over RHEL), 
@@ -48,14 +48,14 @@ D16s_V3 configuration to comfortably run SQL Server 2017 natively on RHEL as wel
   8) Once the virtual machine has been provisioned, select the Overview and click on the IP address of your virtual machine to configure a DNS name for it. In our case, we used sql2017rhel74 which maps to sql2017rhel74.canadaeast.cloudapp.azure.com. This is sometimes easier to remember and use from remote clients like SQL OPS Studio and SQL Server Management Studio to manage the database.
   9) To allow remote tools to connect and manage SQL Server 2017, select Networking from the Left Panel to create an INPUT PORT RULES using the "Add inbound port rule" to create a rule to allow inbound connection to port 1433.
 
-## II - Connect to the RHEL74 VM using SSH. 
+## 2 - Connect to the RHEL74 VM using SSH. 
   1) On the Overview page of our provisionned VM, we selected the "Connect" button and copied the proposed SSH connection command from the panel appearing on the right.
   2) Either using an SSH GUI Client such as Putty or from the command line using OpenSSH connect to the virtual machine.
   
 ```
 ssh yourAdminUsername@ip_address_of_your_virtual_machine
 ```
-## III - Install SQL Server 2017 using RHEL's YUM package manager.
+## 3 - Install SQL Server 2017 using RHEL's YUM package manager.
 
   1) Download the Microsoft SQL Server Red Hat repository configuration file:
   ```
@@ -84,7 +84,7 @@ ssh yourAdminUsername@ip_address_of_your_virtual_machine
   For more details on the installation of SQL Server 2017 over Red Hat Enterprise Linux, please see 
     https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017 
 
-## IV - Restore the WideWorldImporters Full Database Backup
+## 4 - Restore the WideWorldImporters Full Database Backup
 
   1) Download the WideWorldImporters Full Database Backup using the following command:
   ```
@@ -101,7 +101,7 @@ ssh yourAdminUsername@ip_address_of_your_virtual_machine
   go
   ```
   
-## V - Run the following script to prime the database for the demo:
+## 5 - Run the following script to prime the database for the demo:
 
   1) Using SQL Ops Studio (https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?view=sql-server-2017), connect to SQL Server 2017 on your virtual machine and run the following SQL Script:
   ```
@@ -184,7 +184,7 @@ ssh yourAdminUsername@ip_address_of_your_virtual_machine
   GO
   ```
 
-## VI - Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
+## 6 - Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
 
   ```
   sudo docker run \
@@ -195,10 +195,10 @@ ssh yourAdminUsername@ip_address_of_your_virtual_machine
   -d mabenoit/sql-autotune-dashboard:latest
   ```
   
-## VII - Configure the Network Security Group to allow incoming network traffic on the port exposed by the "Web Dashboard Application", (88 in our case).
+## 7 - Configure the Network Security Group to allow incoming network traffic on the port exposed by the "Web Dashboard Application", (88 in our case).
   1) To allow your browser to connect to the demo Web Dashboard that showcases SQL Server 2017's Automatic Tuning capability, select Networking from the Left Panel to create an INPUT PORT RULES using the "Add inbound port rule" to create a rule to allow inbound connection to port 88.
   
-## VIII - Access and use the "Web Dashboard Application" to demo SQL Server 2017 new Automatic Tuning capability.
+## 8 - Access and use the "Web Dashboard Application" to demo SQL Server 2017 new Automatic Tuning capability.
 
   1) Just point your browser to the URL http://ip_address_of_your_virtual_machine:88/
   
