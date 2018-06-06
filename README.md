@@ -1,6 +1,6 @@
 # Context
 
-TODO
+TODO - Intro/Context
 
 TOC:
 - [Context](#context)
@@ -97,91 +97,11 @@ ssh yourAdminUsername@ip_address_of_your_virtual_machine
   ```
   wget https://github.com/Microsoft/sql-server-samples/releases/download/wide-world-importers-v1.0/WideWorldImporters-Full.bak
   ```
-  2) Using SQL Ops Studio (https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?view=sql-server-2017), connect to SQL Server 2017 on your virtual machine and run the following SQL Script:
-  ```
-  restore database WideWorldImporters from disk = '/var/opt/mssql/WideWorldImporters-Full.bak' with
-  move 'WWI_Primary' to '/var/opt/mssql/data/WideWorldImporters.mdf',
-  move 'WWI_UserData' to '/var/opt/mssql/data/WideWorldImporters_UserData.ndf',
-  move 'WWI_Log' to '/var/opt/mssql/data/WideWorldImporters.ldf',
-  move 'WWI_InMemory_Data_1' to '/var/opt/mssql/data/WideWorldImporters_InMemory_Data_1',
-  stats=5
-  go
-  ```
+  2) Using SQL Ops Studio (https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?view=sql-server-2017), connect to SQL Server 2017 on your virtual machine and run [this SQL Script](https://raw.githubusercontent.com/erickangMSFT/sqldevops/master/docker_cluster/aks/restore.sql).
   
 ## 5. Run the following script to prime the database for the demo:
 
-  1) Using SQL Ops Studio (https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?view=sql-server-2017), connect to SQL Server 2017 on your virtual machine and run the following SQL Script:
-  ```
-  USE WideWorldImporters;
-  -- Insert one OrderLine that with PackageTypeID=(0) will cause regression
-  INSERT INTO Warehouse.PackageTypes (PackageTypeID, PackageTypeName, LastEditedBy)
-  VALUES (0, 'FLGP', 1);
-
-  INSERT INTO Sales.OrderLines(OrderId, StockItemID, Description, PAckageTypeID, quantity, unitprice, taxrate, PickedQuantity,LastEditedBy)
-  SELECT TOP 1 OrderID, StockItemID, Description, PackageTypeID = 0, Quantity, UnitPrice, taxrate , PickedQuantity,LastEditedBy
-  FROM Sales.OrderLines;
-
-  -- Add PackageTypeID column into the NCCI index on Sales.OrderLines table
-  DROP INDEX IF EXISTS [NCCX_Sales_OrderLines] ON [Sales].[OrderLines]
-
-  CREATE NONCLUSTERED COLUMNSTORE INDEX [NCCX_Sales_OrderLines] ON [Sales].[OrderLines]
-  (
-    [OrderID],
-    [StockItemID],
-    [Description],
-    [Quantity],
-    [UnitPrice],
-    [PickedQuantity],
-    [PackageTypeID] -- adding package type id for demo purpose
-  )WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0) 
-  GO
-
-  CREATE OR ALTER PROCEDURE [dbo].[initialize]
-  AS BEGIN
-
-    ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE;
-    ALTER DATABASE current SET QUERY_STORE CLEAR ALL;
-
-  END
-  GO
-
-  CREATE OR ALTER PROCEDURE [dbo].[report] (@packagetypeid int)
-  AS BEGIN
-
-  EXEC sp_executesql N'select avg([UnitPrice]*[Quantity])
-              from Sales.OrderLines
-              where PackageTypeID = @packagetypeid', N'@packagetypeid int', @packagetypeid;
-  END
-  GO
-
-  CREATE OR ALTER PROCEDURE [dbo].[regression]
-  AS BEGIN
-
-  ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE;
-  BEGIN
-         declare @packagetypeid int = 0;
-         exec report @packagetypeid;
-  END
-
-  END
-  GO
-
-  CREATE OR ALTER PROCEDURE [dbo].[auto_tuning_on]
-  AS BEGIN
-    ALTER DATABASE current SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = ON);
-    ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE;
-    ALTER DATABASE current SET QUERY_STORE CLEAR ALL;
-  END
-  GO
-
-  CREATE OR ALTER PROCEDURE [dbo].[auto_tuning_off]
-  AS BEGIN
-    ALTER DATABASE current SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = OFF);
-    ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE;
-    ALTER DATABASE current SET QUERY_STORE CLEAR ALL;
-  END
-  GO
-  ```
+  1) Using SQL Ops Studio (https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?view=sql-server-2017), connect to SQL Server 2017 on your virtual machine and run [this SQL Script](./SqlServerAutoTuningDashboard/SqlScripts/init-db.sh).
 
 ## 6. Deploy the Docker container hosting the "Web Dashboard Application" that will connect to the SQL Server 2017 deployed natively on RHEL.
 
