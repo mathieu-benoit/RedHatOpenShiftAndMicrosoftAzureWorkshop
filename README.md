@@ -1,6 +1,6 @@
 # Context
 
-TODO
+TODO - Intro/Context
 
 TOC:
 - [Context](#context)
@@ -16,7 +16,41 @@ TOC:
 
 # VM
 
-TODO
+Prerequesities:
+- A **SQL Server 2017 Enterprise on Red Hat Enterprise Linux 7.4 (RHEL)** VM
+- Two "Inbound port rule" on the associated "Azure Network Security Group", one for the port 1433 and the other for the port 88 to allow external connections to the web app and to the database endpoint.
+- On your local machine, a "[SQL Operations Studio](https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?)" installed
+
+*Note: for more details about the manual installation of SQL Server 2017 over Red Hat Enterprise Linux, please see [here](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017).*
+
+## Database
+
+From within the RHEL74 VM, run the following command:
+```
+cd TODO
+wget https://github.com/Microsoft/sql-server-samples/releases/download/wide-world-importers-v1.0/WideWorldImporters-Full.bak
+```
+
+Using SQL Ops Studio on your local machine, connect to SQL Server 2017 on your virtual machine and run:
+- this [restore.sql Script](https://raw.githubusercontent.com/erickangMSFT/sqldevops/master/docker_cluster/aks/restore.sql).
+- and this [init-db.sql Script](./SqlServerAutoTuningDashboard/SqlScripts/init-db.sh).
+
+## Web
+
+*Note: for now and for the purpose of this demo, you need to have Docker CE installed on this RHEL74 VM.*
+
+```
+sudo docker run \
+-e 'ConnectionStrings:Wwi=Server=10.1.1.4,1433;Database=WideWorldImporters;User Id=SA;Password=SQL2017R0ck5;' \
+-p 88:80 \
+--restart \
+--name webdashboard1 \
+-d mabenoit/sql-autotune-dashboard:latest
+```
+From your local machine, just point your browser to the URL http://ip_address_of_your_virtual_machine:88/
+There is few features to demonstrate from this web dashboard page:
+- Click on the Red "Regression" Button to trigger a degredation in performance and notice the impact on the gauge and the number of requests per second.
+- Click on the On radio button below the gauge to activate SQL Server 2017's Automatic Tuning capability and notice the impact on the gauge and the number of requests per second that goes back up again automatically!
 
 # Docker
 
