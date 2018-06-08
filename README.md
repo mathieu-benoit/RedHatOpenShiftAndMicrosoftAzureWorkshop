@@ -14,7 +14,7 @@ TOC:
 
 # VM
 
-Prerequesities:
+Prerequisities:
 - A **SQL Server 2017 Enterprise on Red Hat Enterprise Linux 7.4 (RHEL)** VM
 - ASP.NET Core installed
 - Two "Inbound port rule" on the associated "Azure Network Security Group", one for the port 1433 and the other for the port 88 to allow external connections to the web app and to the database endpoint.
@@ -86,7 +86,7 @@ And execute this command to initialize the database:
 usr/share/wwi-db-setup/init-db.sh
 ```
 
-`Optional - if you would like you could build the Docker image locally:`
+*Optional - if you would like you could build the Docker image locally:*
 ```
 cd SqlServerAutoTuningDashboard
 docker build \
@@ -114,7 +114,7 @@ docker run \
 
 From your local machine, just point your browser to the URL http://rhel74_ip_address:80/, where we could demonstrate the same features than previously.
 
-`Optional - if you would like you could build the Docker image locally:`
+*Optional - if you would like you could build the Docker image locally:*
 ```
 cd SqlServerAutoTuningDashboard
 docker build \
@@ -142,7 +142,7 @@ High level steps:
 
 See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
 
-![Dashboard Web App](./imgs/VSTS_CI.png)
+![VSTS CI](./imgs/VSTS_CI.PNG)
 
 ## Release
 
