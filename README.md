@@ -15,22 +15,48 @@ TOC:
 # VM
 
 Prerequisities:
-- A **SQL Server 2017 Enterprise on Red Hat Enterprise Linux 7.4 (RHEL)** VM
+- A **Red Hat Enterprise Linux 7.4 (RHEL)** VM
 - ASP.NET Core installed
 - Two "Inbound port rule" on the associated "Azure Network Security Group", one for the port 1433 and the other for the port 88 to allow external connections to the web app and to the database endpoint.
 - On your local machine, a "[SQL Operations Studio](https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?)" installed
 
-*Note: for more details about the manual installation of SQL Server 2017 over Red Hat Enterprise Linux, please see [here](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017).*
-
-To setup the database, from within the RHEL74 VM, run the following command:
+From your local machine, connect to the RHEL74 VM using SSH:
+```	
+ssh yourAdminUsername@ip_address_of_your_virtual_machine	
 ```
-cd TODO
+Download the Microsoft SQL Server Red Hat repository configuration file:	
+```	
+sudo curl -o /etc/yum.repos.d/mssql-server.repo https://packages.microsoft.com/config/rhel/7/mssql-server-2017.repo	
+```
+Install SQL Server 2017:	
+```	
+sudo yum install -y mssql-server	
+```	
+Configure SQL Server 2017:	
+```	
+sudo /opt/mssql/bin/mssql-conf setup	
+```	
+Once the configuration is done, verify that the service is running:	
+```	
+systemctl status mssql-server	
+```	
+To allow remote connections, open the SQL Server port on the firewall on RHEL (default port is TCP 1433):	
+```	
+sudo firewall-cmd --zone=public --add-port=1433/tcp --permanent	
+sudo firewall-cmd --reload	
+```	
+	
+*At this point*, SQL Server 2017 is running on your RHEL machine and is ready to use!
+
+To setup the database for the purpose of this demo, from within the RHEL74 VM, run the following commands:
+```
+cd /var/opt/mssql/backup
 wget https://github.com/Microsoft/sql-server-samples/releases/download/wide-world-importers-v1.0/WideWorldImporters-Full.bak
 ```
 
 Using SQL Ops Studio on your local machine, connect to SQL Server 2017 on your virtual machine and run:
 - this [restore.sql Script](https://raw.githubusercontent.com/erickangMSFT/sqldevops/master/docker_cluster/aks/restore.sql).
-- and this [init-db.sql Script](./SqlServerAutoTuningDashboard/SqlScripts/init-db.sh).
+- and this [init-db.sql Script](./SqlServerAutoTuningDashboard/SqlScripts/init-db.sql).
 
 ![SQL Ops Studio](./imgs/SQL_OPS_Studio.png)
 
@@ -42,7 +68,12 @@ This web application is coming from [this repository](https://github.com/Microso
 
 Now run the ASP.NET Core application from withing your RHEL74 VM, bu executing this command:
 ```
-TODO
+cd ~
+git clone https://github.com/mathieu-benoit/RedHatOpenShiftAndMicrosoftAzureWorkshop.git
+cd RedHatOpenShiftAndMicrosoftAzureWorkshop/SqlServerAutoTuningDashboard
+dotnet restore
+dotnet build
+dotnet run
 ```
 
 From your local machine, just point your browser to the URL http://rhel74_ip_address:88/.
@@ -83,7 +114,7 @@ docker exec \
 
 And execute this command to initialize the database:
 ```
-usr/share/wwi-db-setup/init-db.sh
+usr/share/wwi-db-setup/init-and-restore-db.sh
 ```
 
 *Optional - if you would like you could build the Docker image locally:*
@@ -147,7 +178,14 @@ See the details of this [build definition in YAML file here](./SqlServerAutoTuni
 ## Release
 
 Prerequisities:
-- You need an OpenShift cluster...
+- You need an OpenShift Origin or Container Platform cluster
+- You need a VSTS account and project
+- You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
+
+High level steps:
+- .NET Core - Restore packages
+
+TODO - Associated image
 
 # OSBA
 
@@ -155,4 +193,6 @@ TODO
 
 # Resources
 
+- [Install SQL Server 2017 on RedHat 7.4](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
 - [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
+- [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
