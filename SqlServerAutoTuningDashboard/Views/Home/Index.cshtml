@@ -1,37 +1,45 @@
-﻿<div class="row">
-    <div class="col-md-4">
-        <h1>Automatic tuning</h1>
+<div class="page-header text-left">
+  <h1>SQL Server 2017 sur Linux - "Automatic Tuning"</h1>
+</div>
+<div class="row">
+    <div class="col-md-6 text-center">
+        <span><h3>Performance transactionnelle</h3></span>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-        <span id="speed">0</span> requests per second. <button id="regression" type="button" class="btn btn-danger pull-right">Regression</button>
+    <div class="col-md-6 text-center">
+        <svg class="img-responsive" width="600" height="600"></svg>
+        <h4><span id="speed">0</span> requ&ecirc;tes par seconde.</h4>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <svg width="700" height="700"></svg>
+    <div class="col-md-6 text-left">
+        <img class="img-responsive" src="sql2017rhel74-AutoTuning-Demo-2.png" alt="">
+        <hr>
+        <h3>Requ&ecirc;te T-SQL:</h3>
+        <h5>
+        SELECT AVG( UnitPrice * Quantity )<br>
+        FROM Sales.OrderLines<br>
+        WHERE PackageTypeID = @@packagetypeid;
+        </h5>
+        <hr>
+
+        <h3>Activation du "FORCE LAST GOOD PLAN":</h3>
+        <h5>
+        ALTER DATABASE current<br>
+        SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = ON);
+        </h5>
     </div>
-    <div class="col-md-6">
-        <h3>T-SQL query:</h3>
-        <pre>
-SELECT AVG( UnitPrice * Quantity )
-FROM Sales.OrderLines
-WHERE PackageTypeID = @@packagetypeid;</pre>
-        <h3>Enable FORCE LAST GOOD PLAN:</h3>
-        <pre>
-ALTER DATABASE current
-SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = ON);</pre>
+    <div class="col-md-3 text-center">
+        <h3>D&eacute;gradation artificielle:</h3>
+        <span><button id="regression" type="button" class="btn btn-danger pull-right"><h4>R&eacute;gression</h4></button></span>
     </div>
-    <div class="col-md-6">
-        <div class="btn-group pull-right align-bottom" data-toggle="buttons">
-            <label class="btn btn-default active">
-                <input type="radio" name="options" id="off" autocomplete="off" checked= checked /> OFF
-            </label>
-            <label class="btn btn-default">
-                <input type="radio" name="options" id="on" autocomplete="off" /> ON
-            </label>
-        </div>
+    <div class="col-md-3 text-center">
+        <h3>"Automatic Tuning"</h3>
+        <h4>OFF
+        <label class="switch">
+            <input id="OnOffSwitch" type="checkbox" name="OnOffSwitch"/>
+            <span class="slider round" vertical-align="middle"></span>
+        </label>
+        ON</h4>
     </div>
 </div>
 <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -41,7 +49,7 @@ SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = ON);</pre>
 <script src="~/js/GraphVizGauge.js"></script>
 <script src="/api/demo/init"></script>
 <script>
-    var gauge = new GraphVizGauge("svg", { to: 350, tick: 25 });
+    var gauge = new GraphVizGauge("svg", { to: 375, tick: 25 });
     var perfData = [];
     setInterval(function () {
         $.ajax({
@@ -64,6 +72,14 @@ SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = ON);</pre>
 
     $("button#regression").on("click", function () {
         $.ajax("/api/demo/regression");
+    });
+
+    $("#OnOffSwitch").on("change", function () {
+        if("#OnOffSwitch".checked) {
+            $.ajax("/api/demo/on");
+        } else {
+            $.ajax("/api/demo/off");
+        }
     });
 
     $("#on").on("change", function () {
