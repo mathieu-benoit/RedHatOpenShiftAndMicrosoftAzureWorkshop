@@ -176,10 +176,29 @@ Prerequisities:
 - You need a VSTS account and project
 - You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
 
-High level steps:
-- .NET Core - Restore packages
+Variables:
+- SaPassword = <your-sa-password>
+- SqlDeployName = sql
+- WebDeployName = dotnetcore
 
-TODO - Associated image
+High level steps:
+- Run sql image
+`kubectl run $(SqlDeployName) --image mabenoit/my-mssql-linux:latest --port 1433 --env ACCEPT_EULA=Y --env SA_PASSWORD=$(SaPassword)`
+- Expose sql internally to the cluster
+`kubectl expose deployment $(SqlDeployName) --type=ClusterIP --name=$(SqlDeployName)  --port 1433`
+- Run web image
+`kubectl run $(WebDeployName) --image mabenoit/sql-autotune-dashboard:latest --port 80 --env "ConnectionStrings_Wwi=SERVER=$(SqlDeployName);DATABASE=WideWorldImporters;UID=SA;PWD=$(SaPassword);"`
+- Expose web app externally to the cluster
+`kubectl expose deployment $(WebDeployName) --type=LoadBalancer --name=$(WebDeployName) --port 80`
+
+![VSTS CD](./imgs/VSTS_CD.PNG)
+
+Once succesfully this Release deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
+```
+kubectl exec \
+  <name-of-the-sql-pod> \
+  /usr/share/wwi-db-setup/init-and-restore-db.sh
+```
 
 # OSBA
 
