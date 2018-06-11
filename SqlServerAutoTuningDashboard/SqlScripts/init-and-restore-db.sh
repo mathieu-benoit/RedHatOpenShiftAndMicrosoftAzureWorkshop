@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Parameters
 USER=$1
 PASSWORD=$2
