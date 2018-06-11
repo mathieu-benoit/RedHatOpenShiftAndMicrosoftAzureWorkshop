@@ -105,16 +105,11 @@ docker run \
   -d mabenoit/my-mssql-linux:latest
 ```
 
-Open a bash session within this container:
-```
-docker exec \
-  -it sql \
-  bash
-```
-
 And execute this command to initialize the database:
 ```
-usr/share/wwi-db-setup/init-and-restore-db.sh
+docker exec \
+  sql \
+  /usr/share/wwi-db-setup/init-and-restore-db.sh
 ```
 
 *Optional - if you would like you could build the Docker image locally:*
@@ -127,7 +122,6 @@ docker build \
 ```
 
 Now, let's run the web application presented earlier in a Docker container. For the purpose of this demonstration, we've exposed its associated [public Docker image here](https://hub.docker.com/r/mabenoit/sql-autotune-dashboard/).
-
 
 Pull the lastest version of the Docker image from the public image:
 ```
