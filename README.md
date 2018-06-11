@@ -131,7 +131,7 @@ docker pull mabenoit/sql-autotune-dashboard:latest
 Run the Docker image from the public image:
 ```
 docker run \
-  -e 'ConnectionStrings:Wwi=Server=<server-address>,1433;Database=WideWorldImporters;User Id=SA;Password=<sa-password>;' \
+  -e 'ConnectionStrings_Wwi=Server=<server-address>,1433;Database=WideWorldImporters;User Id=SA;Password=<sa-password>;' \
   -p 80:80 \
   --name web \
   -d mabenoit/sql-autotune-dashboard:latest

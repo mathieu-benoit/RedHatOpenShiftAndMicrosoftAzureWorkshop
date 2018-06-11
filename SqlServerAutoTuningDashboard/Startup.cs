@@ -20,7 +20,7 @@ namespace SqlServerAutoTuningDashboard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration["ConnectionStrings:Wwi"];
+            string connectionString = Configuration["ConnectionStrings_Wwi"];
             services.AddTransient<IQueryMapper>(sp => new QueryMapper(new SqlConnection(connectionString)));
             services.AddMvc();
         }
