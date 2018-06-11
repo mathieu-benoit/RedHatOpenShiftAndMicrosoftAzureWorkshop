@@ -7,4 +7,4 @@ RUN mkdir -p $target
 
 COPY $source $target
 
-RUN chmod +x $target/init-db.sh
+RUN chmod +x $target/init-and-restore-db.sh
