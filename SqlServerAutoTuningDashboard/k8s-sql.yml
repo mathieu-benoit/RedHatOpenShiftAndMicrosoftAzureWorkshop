@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sql
+  labels:
+    name: sql
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 1433
+    targetPort: 1433
+  selector:
+    name: sql
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  sql
+  labels:
+    name:  sql
+spec:
+  template:
+    metadata:
+      labels:
+        name:  sql
+    spec:
+      imagePullSecrets:
+        - name: acr-secret
+      containers:
+      - image:  {ACR_SERVER}.azurecr.io/my-mssql-linux:latest
+        name:  sql
+        env:
+        - name:  ACCEPT_EULA
+          value:  Y
+        - name:  SA_PASSWORD
+          value:  {SA_PASSWORD}
+        ports:
+        - containerPort:  1433
+          name:  sql

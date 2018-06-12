@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dotnetcore
+  labels:
+    name: dotnetcore
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    name: dotnetcore
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  dotnetcore
+  labels:
+    name:  dotnetcore
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name:  dotnetcore
+    spec:
+      imagePullSecrets:
+        - name: acr-secret
+      containers:
+      - image: {ACR_SERVER}/sql-autotune-dashboard:latest
+        name:  dotnetcore
+        env:
+        - name:  ConnectionStrings_Wwi
+          value:  {CONNECTIONSTRINGS_WWI}
+        ports:
+        - containerPort:  80
+          name:  dotnetcore
