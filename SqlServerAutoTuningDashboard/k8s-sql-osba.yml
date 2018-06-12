@@ -1,0 +1,25 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceInstance
+metadata:
+  name: azure-sql-instance
+  namespace: default
+spec:
+  clusterServiceClassExternalName: azure-sql
+  clusterServicePlanExternalName: standard
+  parameters:
+    location: eastus
+    resourceGroup: azure-sql-osba
+    firewallRules:
+    - startIPAddress: "0.0.0.0"
+      endIPAddress: "255.255.255.255"
+      name: "AllowAll"
+---
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
+metadata:
+  name: azure-sql-binding
+  namespace: default
+spec:
+  instanceRef:
+    name: azure-sql-instance
+  secretName: sql-secret
