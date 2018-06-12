@@ -1,6 +1,6 @@
 # Context
 
-TODO - Intro/Context
+This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL74 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
 
 TOC:
 - [Context](#context)
@@ -86,7 +86,10 @@ There is few features to demonstrate from this web dashboard page:
 
 # Docker
 
-From there, Docker CE has to be installed on the RHEL74 VM.
+Prerequisities:
+- Docker CE has to be installed on the RHEL74 VM
+
+*General remark: for the purpose of this demo, all the base images (sql-server-linux and dot-net-core) are Ubuntu. It works on RHEL. But for security,compliance and support you should use the RHEL based image for your own workload.*
 
 Let's now illustrate SQL Server 2017 support on Linux Containers. For that we created and pushed a [public Docker image here](https://hub.docker.com/r/mabenoit/my-mssql-linux/) which will contain the scripts for the purpose of this demo.
 
@@ -148,13 +151,17 @@ docker build \
   .
 ```
 
+# OCP
+
+TODO
+
 # VSTS
 
 ## Build
 
 Prerequisities:
 - You need a VSTS account and project
-- You need a Connection endpoint in VSTS to your Container Registry (ACR, DockerHub, etc.) to be able to push your image built
+- You need a Connection endpoint in VSTS to your Azure Container Registry to be able to push your images built
 
 High level steps:
 - .NET Core - Restore packages
@@ -164,6 +171,7 @@ High level steps:
 - Docker - Push Web image
 - Docker - Build Sql image
 - Docker - Push Sql image
+- Copy and publish Kubernetes' yml files as Build artifact for further deployments
 
 See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
 
@@ -175,29 +183,45 @@ Prerequisities:
 - You need an OpenShift Origin or Container Platform cluster
 - You need a VSTS account and project
 - You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
+- You need a Connection endpoint in VSTS to your Azure Container Registry to be able to create the associated secret in your OpenShift Kubernetes cluster
 
 Variables:
-- SaPassword = <your-sa-password>
+- SA_PASSWORD = your-sa-password
 - SqlDeployName = sql
 - WebDeployName = dotnetcore
+- ACR_SERVER = your-acr-name.azurecr.io
+- CONNECTIONSTRINGS_WWI = SERVER=sql;DATABASE=WideWorldImporters;UID=SA;PWD=your-sa-password;
 
 High level steps:
-- Run sql image
-`kubectl run $(SqlDeployName) --image mabenoit/my-mssql-linux:latest --port 1433 --env ACCEPT_EULA=Y --env SA_PASSWORD=$(SaPassword)`
-- Expose sql internally to the cluster
-`kubectl expose deployment $(SqlDeployName) --type=ClusterIP --name=$(SqlDeployName)  --port 1433`
-- Run web image
-`kubectl run $(WebDeployName) --image mabenoit/sql-autotune-dashboard:latest --port 80 --env "ConnectionStrings_Wwi=SERVER=$(SqlDeployName);DATABASE=WideWorldImporters;UID=SA;PWD=$(SaPassword);"`
-- Expose web app externally to the cluster
-`kubectl expose deployment $(WebDeployName) --type=LoadBalancer --name=$(WebDeployName) --port 80`
+- Replace tokens in **/*.yml
+  - Root directory = `$(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard`
+  - Target files = `**/*.yml`
+- kubectl apply - sql
+  - Command = `apply`
+  - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-sql.yml`
+  - Secrets
+    - Azure Container Registry = your-acr
+    - Secret name = `acr-secret`
+- kubectl apply - web
+  - Command = `apply`
+  - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-web.yml`
+  - Secrets
+    - Azure Container Registry = your-acr
+    - Secret name = `acr-secret`
 
 ![VSTS CD](./imgs/VSTS_CD.PNG)
 
-Once succesfully this Release deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
+Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
+kubectl get pods
 kubectl exec \
   <name-of-the-sql-pod> \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
+```
+
+You could then browse the web dashboard app by its public `EXTERNAL IP` retrieved from:
+```
+kubectl get svc
 ```
 
 # OSBA
