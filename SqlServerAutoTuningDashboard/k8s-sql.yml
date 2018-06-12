@@ -32,7 +32,7 @@ spec:
         name:  sql
         env:
         - name:  ACCEPT_EULA
-          value:  Y
+          value: 'Y'
         - name:  SA_PASSWORD
           value:  {SA_PASSWORD}
         ports:
