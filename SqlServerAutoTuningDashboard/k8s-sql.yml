@@ -28,7 +28,7 @@ spec:
       imagePullSecrets:
         - name: acr-secret
       containers:
-      - image:  {ACR_SERVER}.azurecr.io/my-mssql-linux:latest
+      - image:  {ACR_SERVER}/my-mssql-linux:latest
         name:  sql
         env:
         - name:  ACCEPT_EULA
