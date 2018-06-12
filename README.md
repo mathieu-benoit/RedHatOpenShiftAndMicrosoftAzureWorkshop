@@ -151,10 +151,6 @@ docker build \
   .
 ```
 
-# OCP
-
-TODO
-
 # VSTS
 
 ## Build
@@ -226,10 +222,14 @@ kubectl get svc
 
 # OSBA
 
-TODO
+Prerequisities:
+- You need an OpenShift Origin or Container Platform cluster
+- You need to [install OSBA on your OpenShift Kubernetes cluster](https://github.com/Azure/open-service-broker-azure/blob/master/docs/quickstart-aks.md)
+
 
 # Resources
 
 - [Install SQL Server 2017 on RedHat 7.4](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
 - [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
+- [Open Service Broker for Azure](https://osba.sh/)
