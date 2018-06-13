@@ -4,7 +4,7 @@ This repository has been built to showcase some integrations between RedHat and 
 
 The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
 
-![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.jpg)
+![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.png)
 
 TOC:
 - [Context](#context)
