@@ -248,7 +248,7 @@ Prerequisities:
 - You need an OpenShift Origin or Container Platform cluster
 - You need to [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
 
-Then you will be able to browse and use the different Azure APIs:
+From the OCP Service Catalog you should be able to browse and use the different Azure APIs:
 - Azure SQL Database
 - Azure Cosmos DB
 - Azure Database for PostgreSQL
@@ -262,6 +262,8 @@ Then you will be able to browse and use the different Azure APIs:
 - Azure Storage
 
 ![OSBA in OCP](./imgs/OSBA_OCP.PNG)
+
+From there you could provision for example an Azure SQL Database (Server + Database). After providing some information like the Azure location, resource group, the plan to use, the firewall rules to set up, etc. you will have the choice to generate and bind the associated `Secret` of this Azure SQL Database which will be provisioned in Azure for you. With this `Secret` info you will be able then to map the different keys within this `Secret` to associated environment variables of your web app container/pod/deployment.
 
 # Resources
 
