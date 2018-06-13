@@ -82,7 +82,7 @@ There is few features to demonstrate from this web dashboard page:
 - Click on the Red "Regression" Button to trigger a degredation in performance and notice the impact on the gauge and the number of requests per second.
 - Click on the On radio button below the gauge to activate SQL Server 2017's Automatic Tuning capability and notice the impact on the gauge and the number of requests per second that goes back up again automatically!
 
-![Dashboard Web App](./imgs/Dashboard_Web_App.png)
+![Dashboard Web App](./imgs/SQL2017AutoTuning.png)
 
 # Docker
 
