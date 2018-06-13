@@ -187,7 +187,9 @@ PRE-PROD: [![PRE-PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373
 
 PROD: [![PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)
 
-The goal here is to deploy both images: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release.
+The goal here is to deploy both images: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release. The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
+
+![VSTS CD PIPELINE](./imgs/VSTS_CD_PIPELINE.PNG)
 
 Prerequisities:
 - You need an OpenShift Origin or Container Platform cluster
