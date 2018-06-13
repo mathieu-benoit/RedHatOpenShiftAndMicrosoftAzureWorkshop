@@ -2,6 +2,10 @@
 
 This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL74 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
 
+The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
+
+![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflowg.jpg)
+
 TOC:
 - [Context](#context)
 - [VM](#vm)
@@ -155,6 +159,8 @@ docker build \
 
 ## Build
 
+The goal here is to build and push both images: SQL and Web in a private Azure Container Registry via VSTS and more specifically with VSTS Build.
+
 Prerequisities:
 - You need a VSTS account and project
 - You need a Connection endpoint in VSTS to your Azure Container Registry to be able to push your images built
@@ -175,6 +181,8 @@ See the details of this [build definition in YAML file here](./SqlServerAutoTuni
 
 ## Release
 
+The goal here is to deploy both images: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release.
+
 Prerequisities:
 - You need an OpenShift Origin or Container Platform cluster
 - You need a VSTS account and project
@@ -187,6 +195,7 @@ Variables:
 - WebDeployName = dotnetcore
 - ACR_SERVER = your-acr-name.azurecr.io
 - CONNECTIONSTRINGS_WWI = SERVER=sql;DATABASE=WideWorldImporters;UID=SA;PWD=your-sa-password;
+- K8sNamespace = your-ocp/k8s-project/namspace
 
 High level steps:
 - Replace tokens in **/*.yml
@@ -195,12 +204,14 @@ High level steps:
 - kubectl apply - sql
   - Command = `apply`
   - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-sql.yml`
+  - Namespace = $(K8sNamespace)
   - Secrets
     - Azure Container Registry = your-acr
     - Secret name = `acr-secret`
 - kubectl apply - web
   - Command = `apply`
   - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-web.yml`
+  - Namespace = $(K8sNamespace)
   - Secrets
     - Azure Container Registry = your-acr
     - Secret name = `acr-secret`
@@ -209,7 +220,8 @@ High level steps:
 
 Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
-kubectl get pods
+oc login
+kubectl get pods --namespace <your-ocp/k8s-project/namspace>
 kubectl exec \
   <name-of-the-sql-pod> \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
@@ -247,3 +259,4 @@ Then you will be able to browse and use the different Azure APIs:
 - [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
 - [Open Service Broker for Azure](https://osba.sh/)
+- [Remotely Debug an ASP.NET Core Container Pod on OpenShift with Visual Studio](https://developers.redhat.com/blog/2018/06/13/remotely-debug-asp-net-core-container-pod-on-openshift-with-visual-studio/)
