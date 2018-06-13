@@ -224,8 +224,22 @@ kubectl get svc
 
 Prerequisities:
 - You need an OpenShift Origin or Container Platform cluster
-- You need to [install OSBA on your OpenShift Kubernetes cluster](https://github.com/Azure/open-service-broker-azure/blob/master/docs/quickstart-aks.md)
+- You need to [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
 
+Then you will be able to browse and use the different Azure APIs:
+- Azure SQL Database
+- Azure Cosmos DB
+- Azure Database for PostgreSQL
+- Azure Database for MySQL
+- Azure KeyVault
+- Azure Service Bus
+- Azure Event Hubs
+- Azure Redis Cache
+- Azure Search
+- Azure Container Instances
+- Azure Storage
+
+![OSBA in OCP](./imgs/OSBA_OCP.PNG)
 
 # Resources
 
