@@ -235,9 +235,10 @@ kubectl exec \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
 ```
 
-You could then browse the web dashboard app by its public `EXTERNAL IP` retrieved from:
+You could now expose the web dashboard app by creating a `Route` and then hitting it's associated/generated `HOST/PORT`:
 ```
-kubectl get svc
+oc expose svc/dotnetcore --name=dotnetcore --namespace <your-namespace>
+oc get route --namespace <your-namespace>
 ```
 
 *Note: for the purpose of this demo we deployed both images as Ubuntu based images. For production workload on OpenShift/RedHat and for better support, more performance and security, you will modify the based images to target rhel based images.*
