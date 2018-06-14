@@ -241,7 +241,9 @@ oc expose svc/dotnetcore --name=dotnetcore --namespace <your-namespace>
 oc get route --namespace <your-namespace>
 ```
 
-*Note: for the purpose of this demo we deployed both images as Ubuntu based images. For production workload on OpenShift/RedHat and for better support, more performance and security, you will modify the based images to target rhel based images.*
+*Note: for the purpose of this demo we deployed both images as Ubuntu based images. For production workload on OpenShift/RedHat and for better support, more performance and security, you will modify the based images to target rhel based images.
+
+Furthermore, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
 
 # OSBA
 
