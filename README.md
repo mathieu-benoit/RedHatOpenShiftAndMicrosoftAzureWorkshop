@@ -9,6 +9,7 @@ The goal is demonstrate a typical flow of a modernization journey: from on-premi
 TOC:
 - [Context](#context)
 - [VM](#vm)
+- [Ansible](#ansible)
 - [Docker](#docker)
 - [VSTS](#vsts)
   - [Build](#build)
