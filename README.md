@@ -88,6 +88,10 @@ There is few features to demonstrate from this web dashboard page:
 
 ![Dashboard Web App](./imgs/SQL2017AutoTuning.png)
 
+# Ansible
+
+Are you looking for more automation to install SQL Server on your RHEL VM and also creating a SQL Database? Here you are! [Checkout these Ansible/Tower scripts by Michael Lessard](https://github.com/michaellessard/demoTower).
+
 # Docker
 
 Prerequisities:
