@@ -2,6 +2,8 @@
 
 This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL74 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
 
+You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
+
 The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
 
 ![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.png)
@@ -92,6 +94,8 @@ There is few features to demonstrate from this web dashboard page:
 # Ansible
 
 Are you looking for more automation to install SQL Server on your RHEL VM and also creating a SQL Database? Here you are! [Checkout these Ansible/Tower scripts by Michael Lessard](https://github.com/michaellessard/demoTower).
+
+You could also look at [Michael's MSSQL role on Ansible Galaxy](https://galaxy.ansible.com/michaellessard/mssql/).
 
 # Docker
 
@@ -276,5 +280,6 @@ From there you could provision for example an Azure SQL Database (Server + Datab
 - [Install SQL Server 2017 on RedHat 7.4](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
 - [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
+- [Provisioning OCP on Azure with Ansible](https://galaxy.ansible.com/michaellessard/mssql/)
 - [Open Service Broker for Azure](https://osba.sh/)
 - [Remotely Debug an ASP.NET Core Container Pod on OpenShift with Visual Studio](https://developers.redhat.com/blog/2018/06/13/remotely-debug-asp-net-core-container-pod-on-openshift-with-visual-studio/)
