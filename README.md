@@ -283,4 +283,5 @@ From there you could provision for example an Azure SQL Database (Server + Datab
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
 - [Provisioning OCP on Azure with Ansible](https://galaxy.ansible.com/michaellessard/mssql/)
 - [Open Service Broker for Azure](https://osba.sh/)
+- [Announcing .NET Core 2.1 for Red Hat Platforms](https://developers.redhat.com/blog/2018/06/14/announcing-net-core-2-1-for-red-hat-platforms/)
 - [Remotely Debug an ASP.NET Core Container Pod on OpenShift with Visual Studio](https://developers.redhat.com/blog/2018/06/13/remotely-debug-asp-net-core-container-pod-on-openshift-with-visual-studio/)
