@@ -102,7 +102,7 @@ You could also look at [Michael's MSSQL role on Ansible Galaxy](https://galaxy.a
 Prerequisities:
 - Docker CE has to be installed on the RHEL74 VM
 
-*General remark: for the purpose of this demo, all the base images (sql-server-linux and dot-net-core) are Ubuntu. It works on RHEL. But for security,compliance and support you should use the RHEL based image for your own workload.*
+*Important note: for the purpose of this demo we deployed both images SQL and Web as Ubuntu based images. It works on RHEL. But for production workload on OpenShift/RedHat and for better support, more performance and security compliance, you will modify the based images to target rhel based images.*
 
 Let's now illustrate SQL Server 2017 support on Linux Containers. For that we created and pushed a [public Docker image here](https://hub.docker.com/r/mabenoit/my-mssql-linux/) which will contain the scripts for the purpose of this demo.
 
@@ -203,8 +203,15 @@ The goal here is to deploy both images: SQL and Web on a given OpenShift Cluster
 Prerequisities:
 - You need an OpenShift Origin or Container Platform cluster
 - You need a VSTS account and project
-- You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
 - You need a Connection endpoint in VSTS to your Azure Container Registry to be able to create the associated secret in your OpenShift Kubernetes cluster
+- You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images 
+
+For the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
+- On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
+- Run `oc login <server-url>`, provide either a token or your username/password
+- Get the associated kube config file: `cat ~.kube/config` and keep the entire content, especially the one regarding this specific cluster if you have more than one.
+- Go to to your VSTS project and navigate to your `/_admin/_services` page. There, add a new "Kubernetes service endpoint" filling out the `Server URL field` and the `KubeConfig`. You need also to enable the `Accept Untrusted Certificates` checkbox.
+- If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
 Variables:
 - SA_PASSWORD = your-sa-password
@@ -237,7 +244,6 @@ High level steps:
 
 Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
-oc login
 kubectl get pods --namespace <your-ocp/k8s-project/namspace>
 kubectl exec \
   <name-of-the-sql-pod> \
@@ -250,7 +256,7 @@ oc expose svc/dotnetcore --name=dotnetcore --namespace <your-namespace>
 oc get route --namespace <your-namespace>
 ```
 
-*Notes: for the purpose of this demo we deployed both images as Ubuntu based images. For production workload on OpenShift/RedHat and for better support, more performance and security, you will modify the based images to target rhel based images. Furthermore, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
+*Note: to achieve that and for the purpose of this demo, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
 
 # OSBA
 
