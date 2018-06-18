@@ -1,14 +1,3 @@
-# Context
-
-This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL74 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
-
-You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
-
-The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
-
-![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.png)
-
-TOC:
 - [Context](#context)
 - [VM](#vm)
 - [Ansible](#ansible)
@@ -18,6 +7,16 @@ TOC:
   - [Release](#release)
 - [OSBA](#osba)
 - [Resources](#resources)
+
+# Context
+
+This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL74 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
+
+You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
+
+The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
+
+![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.png)
 
 # VM
 
