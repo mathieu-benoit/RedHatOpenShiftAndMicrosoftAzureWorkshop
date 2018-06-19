@@ -243,9 +243,9 @@ High level steps:
 
 Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
-kubectl get pods --namespace <your-ocp/k8s-project/namspace>
+SQL_POD=$(kubectl get pods -l name=sql -n <your-namespace> -o jsonpath='{.items[0].metadata.name}')
 kubectl exec \
-  <name-of-the-sql-pod> \
+  $SQL_POD \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
 ```
 
