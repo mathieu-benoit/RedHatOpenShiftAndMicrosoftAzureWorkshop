@@ -32,8 +32,16 @@ spec:
       - image: {ACR_SERVER}/sql-autotune-dashboard:latest
         name:  dotnetcore
         env:
-        - name:  ConnectionStrings_Wwi
-          value:  {CONNECTIONSTRINGS_WWI}
+        - name:  ConnectionStrings_Server
+          value:  {CONNECTIONSTRINGS_SERVER}
+        - name:  ConnectionStrings_Port
+          value:  {CONNECTIONSTRINGS_PORT}
+        - name:  ConnectionStrings_Database
+          value:  {CONNECTIONSTRINGS_DATABASE}
+        - name:  ConnectionStrings_UserId
+          value:  {CONNECTIONSTRINGS_USERID}
+        - name:  ConnectionStrings_Password
+          value:  {CONNECTIONSTRINGS_PASSWORD}
         ports:
         - containerPort:  80
           name:  dotnetcore

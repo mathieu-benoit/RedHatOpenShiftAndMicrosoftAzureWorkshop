@@ -146,7 +146,11 @@ docker pull mabenoit/sql-autotune-dashboard:latest
 Run the Docker image from the public image:
 ```
 docker run \
-  -e 'ConnectionStrings_Wwi=Server=<server-address>,1433;Database=WideWorldImporters;User Id=SA;Password=<sa-password>;' \
+  -e 'ConnectionStrings_Server=FIXME' \
+  -e 'ConnectionStrings_Port=1433' \
+  -e 'ConnectionStrings_Database=WideWorldImporters' \
+  -e 'ConnectionStrings_UserId=SA' \
+  -e 'ConnectionStrings_Password=<sa-password>' \
   -p 80:80 \
   --name web \
   -d mabenoit/sql-autotune-dashboard:latest
@@ -164,6 +168,8 @@ docker build \
 ```
 
 # VSTS
+
+In this section you will see how you could build and deploy your web and sql Docker images into your OpenShift Container Platform (OCP) cluster via Visual Studio Team Services (VSTS).
 
 ## Build
 
