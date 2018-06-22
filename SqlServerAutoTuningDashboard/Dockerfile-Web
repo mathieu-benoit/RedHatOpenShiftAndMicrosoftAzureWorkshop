@@ -4,7 +4,7 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-COPY SqlServerAutoTuningDashboard.csproj SqlServerAutoTuningDashboard/
+COPY SqlServerAutoTuningDashboard.csproj .
 RUN dotnet restore SqlServerAutoTuningDashboard.csproj
 COPY . .
 RUN dotnet build SqlServerAutoTuningDashboard.csproj -c Release -o /app
