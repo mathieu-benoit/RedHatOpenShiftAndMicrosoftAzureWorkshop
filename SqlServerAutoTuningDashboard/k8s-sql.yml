@@ -8,8 +8,8 @@ spec:
   type: ClusterIP
   ports:
   - name: http
-    port: 1433
-    targetPort: 1433
+    port: {SQL_PORT}
+    targetPort: {SQL_PORT}
   selector:
     name: sql
 ---
@@ -34,7 +34,7 @@ spec:
         - name:  ACCEPT_EULA
           value: 'Y'
         - name:  SA_PASSWORD
-          value:  {SA_PASSWORD}
+          value:  {SQL_PASSWORD}
         ports:
-        - containerPort:  1433
+        - containerPort:  {SQL_PORT}
           name:  sql

@@ -10,7 +10,7 @@
 
 # Context
 
-This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL75 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
+This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL75 VM, ASP.NET Core 2.1, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
 
 You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
 
@@ -218,12 +218,15 @@ For the last prerequisities above, *Connection endpoint in VSTS to your OpenShif
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
 Variables:
-- SA_PASSWORD = your-sa-password
 - SqlDeployName = sql
-- WebDeployName = dotnetcore
+- WebDeployName = web
 - ACR_SERVER = your-acr-name.azurecr.io
-- CONNECTIONSTRINGS_WWI = SERVER=sql;DATABASE=WideWorldImporters;UID=SA;PWD=your-sa-password;
-- K8sNamespace = your-ocp/k8s-project/namspace
+- K8sNamespace = your-ocp-project
+- SQL_SERVER = sql
+- SQL_PORT = 1433
+- SQL_DATABASE = WideWorldImporters
+- SQL_USERID = SA
+- SQL_PASSWORD = your-password
 
 High level steps:
 - Replace tokens in **/*.yml
@@ -256,7 +259,7 @@ kubectl exec \
 
 You could now expose the web dashboard app by creating a `Route` and then hitting it's associated/generated `HOST/PORT`:
 ```
-oc expose svc/dotnetcore --name=dotnetcore --namespace <your-namespace>
+oc expose svc/web --name=web --namespace <your-namespace>
 oc get route --namespace <your-namespace>
 ```
 

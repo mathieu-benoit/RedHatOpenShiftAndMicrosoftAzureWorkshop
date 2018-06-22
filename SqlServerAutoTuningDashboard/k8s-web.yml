@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dotnetcore
+  name: web
   labels:
-    name: dotnetcore
+    name: web
 spec:
   type: LoadBalancer
   ports:
@@ -11,37 +11,37 @@ spec:
     port: 80
     targetPort: 80
   selector:
-    name: dotnetcore
+    name: web
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name:  dotnetcore
+  name:  web
   labels:
-    name:  dotnetcore
+    name:  web
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name:  dotnetcore
+        name:  web
     spec:
       imagePullSecrets:
         - name: acr-secret
       containers:
       - image: {ACR_SERVER}/sql-autotune-dashboard:latest
-        name:  dotnetcore
+        name:  web
         env:
         - name:  ConnectionStrings_Server
-          value:  {CONNECTIONSTRINGS_SERVER}
+          value:  {SQL_SERVER}
         - name:  ConnectionStrings_Port
-          value:  {CONNECTIONSTRINGS_PORT}
+          value:  {SQL_PORT}
         - name:  ConnectionStrings_Database
-          value:  {CONNECTIONSTRINGS_DATABASE}
+          value:  {SQL_DATABASE}
         - name:  ConnectionStrings_UserId
-          value:  {CONNECTIONSTRINGS_USERID}
+          value:  {SQL_USERID}
         - name:  ConnectionStrings_Password
-          value:  {CONNECTIONSTRINGS_PASSWORD}
+          value:  {SQL_PASSWORD}
         ports:
         - containerPort:  80
-          name:  dotnetcore
+          name:  web
