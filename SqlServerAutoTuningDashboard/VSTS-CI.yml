@@ -3,33 +3,13 @@ queue:
   condition: succeeded()
 variables:
     BuildConfiguration: release
-    DotNetCorePackagingFolder: 'pub'
 steps:
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: '**/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
-- task: DotNetCoreCLI@2
-  displayName: Publish
-  inputs:
-    command: publish
-    publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(DotNetCorePackagingFolder)'
-    zipAfterPublish: false
-    modifyOutputPath: false
 - task: Docker@0
   displayName: Build Web image
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryConnection: MyDockerHub
     dockerFile: 'SqlServerAutoTuningDashboard/Dockerfile-Web'
-    buildArguments: 'source=$(DotNetCorePackagingFolder)'
     defaultContext: false
     context: SqlServerAutoTuningDashboard
     imageName: 'mabenoit/sql-autotune-dashboard:$(Build.BuildId)'

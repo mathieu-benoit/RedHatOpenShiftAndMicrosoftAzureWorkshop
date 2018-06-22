@@ -10,7 +10,7 @@
 
 # Context
 
-This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL74 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
+This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL75 VM, .NET Core, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
 
 You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
 
@@ -21,12 +21,12 @@ The goal is demonstrate a typical flow of a modernization journey: from on-premi
 # VM
 
 Prerequisities:
-- A **Red Hat Enterprise Linux 7.4 (RHEL)** VM
-- ASP.NET Core installed
+- A **Red Hat Enterprise Linux 7.5 (RHEL)** VM
+- ASP.NET Core 2.1 installed
 - Two "Inbound port rule" on the associated "Azure Network Security Group", one for the port 1433 and the other for the port 88 to allow external connections to the web app and to the database endpoint.
 - On your local machine, a "[SQL Operations Studio](https://docs.microsoft.com/en-us/sql/sql-operations-studio/download?)" installed
 
-From your local machine, connect to the RHEL74 VM using SSH:
+From your local machine, connect to the RHEL7 VM using SSH:
 ```	
 ssh yourAdminUsername@ip_address_of_your_virtual_machine	
 ```
@@ -54,7 +54,7 @@ sudo firewall-cmd --reload
 	
 *At this point*, SQL Server 2017 is running on your RHEL machine and is ready to use!
 
-To setup the database for the purpose of this demo, from within the RHEL74 VM, run the following commands:
+To setup the database for the purpose of this demo, from within the RHEL7 VM, run the following commands:
 ```
 cd /var/opt/mssql/backup
 wget https://github.com/Microsoft/sql-server-samples/releases/download/wide-world-importers-v1.0/WideWorldImporters-Full.bak
@@ -72,7 +72,7 @@ The web application is a simple dashboard to interact with Sql Server 2017 to de
 
 This web application is coming from [this repository](https://github.com/Microsoft/sql-server-samples/tree/master/samples/features/automatic-tuning/force-last-good-plan) + few updates with ASP.NET Core 2.0 and some simplifications + Docker support.
 
-Now run the ASP.NET Core application from withing your RHEL74 VM, bu executing this command:
+Now run the ASP.NET Core application from withing your RHEL7 VM, bu executing this command:
 ```
 cd ~
 git clone https://github.com/mathieu-benoit/RedHatOpenShiftAndMicrosoftAzureWorkshop.git
@@ -82,7 +82,7 @@ dotnet build
 dotnet run
 ```
 
-From your local machine, just point your browser to the URL http://rhel74_ip_address:88/.
+From your local machine, just point your browser to the URL http://rhel_ip_address:88/.
 
 There is few features to demonstrate from this web dashboard page:
 - Click on the Red "Regression" Button to trigger a degredation in performance and notice the impact on the gauge and the number of requests per second.
@@ -99,7 +99,7 @@ You could also look at [Michael's MSSQL role on Ansible Galaxy](https://galaxy.a
 # Docker
 
 Prerequisities:
-- Docker CE has to be installed on the RHEL74 VM
+- Docker CE has to be installed on the RHEL7 VM
 
 *Important note: for the purpose of this demo we deployed both images SQL and Web as Ubuntu based images. It works on RHEL. But for production workload on OpenShift/RedHat and for better support, more performance and security compliance, you will modify the based images to target rhel based images.*
 
@@ -131,7 +131,7 @@ docker exec \
 ```
 cd SqlServerAutoTuningDashboard
 docker build \
-  -t m-mssql-linux \
+  -t my-mssql-linux \
   -f Dockerfile-Sql \
   .
 ```
@@ -156,7 +156,7 @@ docker run \
   -d mabenoit/sql-autotune-dashboard:latest
 ```
 
-From your local machine, just point your browser to the URL http://rhel74_ip_address:80/, where we could demonstrate the same features than previously.
+From your local machine, just point your browser to the URL http://rhel_ip_address:80/, where we could demonstrate the same features than previously.
 
 *Optional - if you would like you could build the Docker image locally:*
 ```
@@ -182,9 +182,7 @@ Prerequisities:
 - You need a Connection endpoint in VSTS to your Azure Container Registry to be able to push your images built
 
 High level steps:
-- .NET Core - Restore packages
-- .NET Core - Build Web app
-- .NET Core - Package Web app
+- Agent queue: `Hosted Linux Preview`
 - Docker - Build Web image
 - Docker - Push Web image
 - Docker - Build Sql image
@@ -213,9 +211,10 @@ Prerequisities:
 
 For the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
 - On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
-- Run `oc login <server-url>`, provide either a token or your username/password
+- Run `oc login <server-url>`, and provide either a token or your username/password
 - Get the associated kube config file: `cat ~.kube/config` and keep the entire content, especially the one regarding this specific cluster if you have more than one.
 - Go to to your VSTS project and navigate to your `/_admin/_services` page. There, add a new "Kubernetes service endpoint" filling out the `Server URL field` and the `KubeConfig`. You need also to enable the `Accept Untrusted Certificates` checkbox.
+  - *Important remark: by default this token will be valid for 24h, so you will have to repeat these 3 previous commands then.*
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
 Variables:
@@ -290,7 +289,7 @@ From there you could provision for example an Azure SQL Database (Server + Datab
 
 - [How to prepare a Red Hat-based virtual machine for Azure](https://azure.microsoft.com/en-us/resources/how-to-prepare-a-red-hat-based-virtual-machine-for-azure)
 - [Why switch to SQL Server 2017 on Linux?](https://info.microsoft.com/top-six-reasons-companies-make-the-move-to-sql-server-2017-register.html)
-- [Install SQL Server 2017 on RedHat 7.4](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
+- [Install SQL Server 2017 on RedHat 7](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
 - [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
 - [Provisioning OCP on Azure with Ansible](https://galaxy.ansible.com/michaellessard/mssql/)
