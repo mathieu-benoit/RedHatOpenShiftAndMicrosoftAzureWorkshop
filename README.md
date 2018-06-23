@@ -249,6 +249,8 @@ High level steps:
 
 ![VSTS CD](./imgs/VSTS_CD.PNG)
 
+*Note: to achieve that and for the purpose of this demo, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
+
 Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
 SQL_POD=$(kubectl get pods -l name=sql -n <your-namespace> -o jsonpath='{.items[0].metadata.name}')
@@ -263,7 +265,7 @@ oc expose svc/web --name=web --namespace <your-namespace>
 oc get route --namespace <your-namespace>
 ```
 
-*Note: to achieve that and for the purpose of this demo, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
+![Deployments in OCP](./imgs/Deployments_OCP.PNG)
 
 # OSBA
 
@@ -272,21 +274,12 @@ Prerequisities:
 - You need to [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
 
 From the OCP Service Catalog you should be able to browse and use the different Azure APIs:
-- Azure SQL Database
-- Azure Cosmos DB
-- Azure Database for PostgreSQL
-- Azure Database for MySQL
-- Azure KeyVault
-- Azure Service Bus
-- Azure Event Hubs
-- Azure Redis Cache
-- Azure Search
-- Azure Container Instances
-- Azure Storage
 
 ![OSBA in OCP](./imgs/OSBA_OCP.PNG)
 
-From there you could provision for example an Azure SQL Database (Server + Database). After providing some information like the Azure location, resource group, the plan to use, the firewall rules to set up, etc. you will have the choice to generate and bind the associated `Secret` of this Azure SQL Database which will be provisioned in Azure for you. With this `Secret` info you will be able then to map the different keys within this `Secret` to associated environment variables of your web app container/pod/deployment.
+From there let's provision an `Azure SQL Database` (Server + Database). After providing some information like the Azure location, the resource group, the plan to use, the firewall rules to set up, etc. you will have the choice to generate and bind the associated `Secret` of this Azure SQL Database which will be provisioned in Azure for you. With this `Secret` info you will be able then to map the different keys within this `Secret` to associated environment variables of your web app container/pod/deployment:
+
+![OSBA Secrets in OCP](./imgs/OSBA_Secrets_OCP.PNG)
 
 # Resources
 
