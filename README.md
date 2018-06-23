@@ -70,7 +70,7 @@ Now let's setup the web application.
 
 The web application is a simple dashboard to interact with Sql Server 2017 to demonstrate the AutoTuning feature.
 
-This web application is coming from [this repository](https://github.com/Microsoft/sql-server-samples/tree/master/samples/features/automatic-tuning/force-last-good-plan) + few updates with ASP.NET Core 2.0 and some simplifications + Docker support.
+*Note: This web application is coming from [this repository](https://github.com/Microsoft/sql-server-samples/tree/master/samples/features/automatic-tuning/force-last-good-plan). We migrated it to ASP.NET Core 2.1 and we have some simplifications and customizations, finally we enabled the Docker support.*
 
 Now run the ASP.NET Core application from withing your RHEL7 VM, bu executing this command:
 ```
