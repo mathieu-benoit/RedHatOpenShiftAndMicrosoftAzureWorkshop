@@ -277,7 +277,7 @@ From the OCP Service Catalog you should be able to browse and use the different 
 
 ![OSBA in OCP](./imgs/OSBA_OCP.PNG)
 
-From there let's provision an `Azure SQL Database` (Server + Database). After providing some information like the Azure location, the resource group, the plan to use, the firewall rules to set up, etc. you will have the choice to generate and bind the associated `Secret` of this Azure SQL Database which will be provisioned in Azure for you. With this `Secret` info you will be able then to map the different keys within this `Secret` to associated environment variables of your web app container/pod/deployment:
+From there let's provision an `Azure SQL Database` (Server + Database). After providing some information like the Azure location, the resource group, the plan to use, the firewall rules to set up, etc. you will have the choice to generate and bind the associated `Secret` of this Azure SQL Database which will be provisioned in Azure for you. With this `Secret` info you will be able then to map the different keys within this `Secret` to associated environment variables of your web app deployment:
 
 ![OSBA Secrets in OCP](./imgs/OSBA_Secrets_OCP.PNG)
 
