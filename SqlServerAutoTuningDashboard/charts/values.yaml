@@ -1,0 +1,15 @@
+web:
+  image:
+    repository: mabenoit
+    name: sql-autotune-dashboard
+    tag: latest
+  port: 80
+sql:
+  image:
+    repository: mabenoit
+    name: my-mssql-linux
+    tag: latest
+  port: 1433
+  server: sql
+  database: WideWorldImporters
+  userid: SA

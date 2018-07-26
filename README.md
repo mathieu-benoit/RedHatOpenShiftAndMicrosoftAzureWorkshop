@@ -253,7 +253,7 @@ High level steps:
 
 Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
-SQL_POD=$(kubectl get pods -l name=sql -n <your-namespace> -o jsonpath='{.items[0].metadata.name}')
+SQL_POD=$(kubectl get pods -l app=sql -n <your-namespace> -o jsonpath='{.items[0].metadata.name}')
 kubectl exec \
   $SQL_POD \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
