@@ -189,6 +189,7 @@ High level steps:
 - Docker - Push Sql image
 - Helm - init --client-only
 - Helm - package
+- Publish Helm chart as Artifact
 
 See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
 
