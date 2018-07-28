@@ -187,8 +187,7 @@ High level steps:
 - Docker - Push Web image
 - Docker - Build Sql image
 - Docker - Push Sql image
-- Helm - Install
-- Helm - init
+- Helm - init --client-only
 - Helm - package
 
 See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
