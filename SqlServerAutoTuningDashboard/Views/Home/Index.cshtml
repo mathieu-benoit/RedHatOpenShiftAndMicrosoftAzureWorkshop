@@ -56,6 +56,10 @@
         $.ajax({
             url: "/api/demo",
             success: function (result) {
+                if (result.y == 0) {
+                    console.log("No response");
+                    return;
+                }
                 (perfData.length == 10) && perfData.shift();
                 if (result > 0)
                     perfData.push(result);
