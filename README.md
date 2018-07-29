@@ -245,10 +245,7 @@ High level steps:
 
 **TIPS in OCP**: to achieve that and for the purpose of this demo, you should:
 - "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly
-- "Grant the Tiller server edit access to the current project by running this command: `oc policy add-role-to-user edit "system:serviceaccount:${TILLER_NAMESPACE}:tiller"` where `TILLER_NAMESPACE` is the name of the namespace where you installed Tiller in (you did that with this tutorial:
-```
-helm init --upgrade
-```
+- "[Grant cluster-admin rights to the kube-system namespace’s default kube-system service account](https://blog.openshift.com/from-templates-to-openshift-helm-charts/)" - which is need for Tiller to work properly - by running this command: `oc adm policy add-cluster-role-to-user cluster-admin -z default --namespace kube-system`. You could also read [this other article](https://blog.openshift.com/getting-started-helm-openshift/) which mentions how to be granular and only add proper rights per namespace/project.
 
 Once this Release is succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
