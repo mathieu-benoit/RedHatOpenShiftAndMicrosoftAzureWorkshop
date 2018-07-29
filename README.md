@@ -2,7 +2,7 @@
 - [VM](#vm)
 - [Ansible](#ansible)
 - [Docker](#docker)
-- [VSTS](#vsts)
+- [VSTS and Helm](#vsts-and-helm)
   - [Build](#build)
   - [Release](#release)
 - [OSBA](#osba)
@@ -14,9 +14,11 @@ This repository has been built to showcase some integrations between RedHat and 
 
 You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
 
-The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
+The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with Kubernetes and a step further with OCP; and then finally take advantage of your SQL database as a Service:
 
 ![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.png)
+
+Remark: the intent here is to use as much as possible Kubernetes API (CLI and manifest files) to interact with the OCP cluster to demonstrate how easily you could be up to speed with OCP with your Kubernetes skills. Furthermore, some extra OCP setup and config will be illustrated as needed.
 
 # VM
 
@@ -167,7 +169,7 @@ docker build \
   .
 ```
 
-# VSTS
+# VSTS and Helm
 
 In this section you will see how you could build and deploy your web and sql Docker images into your OpenShift Container Platform (OCP) cluster via Visual Studio Team Services (VSTS).
 
@@ -211,7 +213,7 @@ Prerequisities:
 - You need a Connection endpoint in VSTS to your Azure Container Registry to be able to create the associated secret in your OpenShift Kubernetes cluster
 - You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images 
 
-For the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
+**TIPS in OCP**: for the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
 - On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
 - Run `oc login <server-url>`, and provide either a token or your username/password
 - Get the associated kube config file: `cat ~.kube/config` and keep the entire content, especially the one regarding this specific cluster if you have more than one.
@@ -220,38 +222,33 @@ For the last prerequisities above, *Connection endpoint in VSTS to your OpenShif
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
 Variables:
-- SqlDeployName = sql
-- WebDeployName = web
-- ACR_SERVER = your-acr-name.azurecr.io
+- AzureContainerRegistryServer = your-acr-name.azurecr.io
+- HelmDeploymentName = autotuningdashboard
 - K8sNamespace = your-ocp-project
-- SQL_SERVER = sql
-- SQL_PORT = 1433
-- SQL_DATABASE = WideWorldImporters
-- SQL_USERID = SA
-- SQL_PASSWORD = your-password
+- SqlPassword = your-sql-password
 
 High level steps:
-- Replace tokens in **/*.yml
-  - Root directory = `$(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard`
-  - Target files = `**/*.yml`
-- kubectl apply - sql
-  - Command = `apply`
-  - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-sql.yml`
+- Helm - init
+  - Command = `init`
+  - Upgrade Tiller = `true`
+- Helm - install charts
   - Namespace = $(K8sNamespace)
-  - Secrets
-    - Azure Container Registry = your-acr
-    - Secret name = `acr-secret`
-- kubectl apply - web
-  - Command = `apply`
-  - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-web.yml`
-  - Namespace = $(K8sNamespace)
-  - Secrets
-    - Azure Container Registry = your-acr
-    - Secret name = `acr-secret`
+  - Command = `upgrade`
+  - Chart Type = `File Path`
+  - Chart Path = `$(System.DefaultWorkingDirectory)/**/autotuningdashboard-*.tgz`
+  - Release Name = $(HelmDeploymentName)
+  - Install if release not present = `true`
+  - Wait = `true`
+  - Arguments = `--set sql.password=$(SqlPassword) web.image.repository=$(AzureContainerRegistryServer) sql.image.repository=$(AzureContainerRegistryServer)`
 
 ![VSTS CD](./imgs/VSTS_CD.PNG)
 
-*Note: to achieve that and for the purpose of this demo, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
+**TIPS in OCP**: to achieve that and for the purpose of this demo, you should:
+- "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly
+- "Grant the Tiller server edit access to the current project by running this command: `oc policy add-role-to-user edit "system:serviceaccount:${TILLER_NAMESPACE}:tiller"` where `TILLER_NAMESPACE` is the name of the namespace where you installed Tiller in (you did that with this tutorial:
+```
+helm init --upgrade
+```
 
 Once this Release is succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
@@ -261,7 +258,7 @@ kubectl exec \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
 ```
 
-You could now expose the web dashboard app by creating a `Route` and then hitting it's associated/generated `HOST/PORT`:
+**TIPS in OCP**: to be able to publicly browse your web app just deployed you will have to create a `Route` and then hitting it's associated/generated `HOST/PORT`. For that you will have to run these commands:
 ```
 oc expose svc/web --name=web --namespace <your-namespace>
 oc get route --namespace <your-namespace>
