@@ -17,7 +17,7 @@ spec:
       imagePullSecrets:
         - name: acr-secret
       containers:
-      - image: {{ .Values.web.image.repository }}/{{ .Values.web.image.name }}:{{ .Values.web.image.tag }}
+      - image: {{ .Values.imageCredentials.registry }}/{{ .Values.web.image.name }}:{{ .Values.web.image.tag }}
         name: web
         env:
         - name: ConnectionStrings_Server

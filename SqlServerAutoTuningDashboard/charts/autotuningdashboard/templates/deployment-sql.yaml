@@ -16,7 +16,7 @@ spec:
       imagePullSecrets:
         - name: acr-secret
       containers:
-      - image: {{ .Values.sql.image.repository }}/{{ .Values.sql.image.name }}:{{ .Values.sql.image.tag }}
+      - image: {{ .Values.imageCredentials.registry }}/{{ .Values.sql.image.name }}:{{ .Values.sql.image.tag }}
         name: sql
         env:
         - name: ACCEPT_EULA

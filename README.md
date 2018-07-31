@@ -2,7 +2,7 @@
 - [VM](#vm)
 - [Ansible](#ansible)
 - [Docker](#docker)
-- [VSTS and Helm](#vsts-and-helm)
+- [VSTS, ACR and Helm](#vsts-acr-and-helm)
   - [Build](#build)
   - [Release](#release)
 - [OSBA](#osba)
@@ -101,7 +101,7 @@ You could also look at [Michael's MSSQL role on Ansible Galaxy](https://galaxy.a
 # Docker
 
 Prerequisities:
-- Docker CE has to be installed on the RHEL7 VM
+- A Docker CE installed on the RHEL7 VM
 
 *Important note: for the purpose of this demo we deployed both images SQL and Web as Ubuntu based images. It works on RHEL. But for production workload on OpenShift/RedHat and for better support, more performance and security compliance, you will modify the based images to target rhel based images.*
 
@@ -169,7 +169,7 @@ docker build \
   .
 ```
 
-# VSTS and Helm
+# VSTS, ACR and Helm
 
 In this section you will see how you could build and deploy your web and sql Docker images into your OpenShift Container Platform (OCP) cluster via Visual Studio Team Services (VSTS).
 
@@ -180,8 +180,8 @@ In this section you will see how you could build and deploy your web and sql Doc
 The goal here is to build and push both images: SQL and Web in a private Azure Container Registry via VSTS and more specifically with VSTS Build.
 
 Prerequisities:
-- You need a VSTS account and project
-- You need a Connection endpoint in VSTS to your Azure Container Registry to be able to push your images built
+- A VSTS account and project
+- A Connection endpoint in VSTS to your Azure Container Registry (ACR) to be able to push your images built
 
 High level steps:
 - Agent queue: `Hosted Linux Preview`
@@ -203,15 +203,15 @@ PRE-PROD: [![PRE-PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373
 
 PROD: [![PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)
 
-The goal here is to deploy both images: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release. The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
+The goal here is to deploy both images from ACR: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release. The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
 
 ![VSTS CD PIPELINE](./imgs/VSTS_CD_PIPELINE.PNG)
 
 Prerequisities:
-- You need an OpenShift Origin or Container Platform cluster
-- You need a VSTS account and project
-- You need a Connection endpoint in VSTS to your Azure Container Registry to be able to create the associated secret in your OpenShift Kubernetes cluster
-- You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images 
+- An OpenShift Origin or Container Platform cluster
+- A VSTS account and project
+- A Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images 
+- FIXME - To create a Service Principal for accessing your Azure Container Registry (ACR) - FIXME
 
 **TIPS in OCP**: for the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
 - On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
@@ -222,7 +222,9 @@ Prerequisities:
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
 Variables:
-- AzureContainerRegistryServer = your-acr-name.azurecr.io
+- RegistryLoginServer = your-acr-name.azurecr.io
+- RegistryUserName = your-acr-username-or-sp-clientid
+- RegistryPassword = your-acr-password-or-sp-password
 - HelmDeploymentName = autotuningdashboard
 - K8sNamespace = your-ocp-project
 - SqlPassword = your-sql-password
@@ -239,7 +241,7 @@ High level steps:
   - Release Name = $(HelmDeploymentName)
   - Install if release not present = `true`
   - Wait = `true`
-  - Arguments = `--set sql.password=$(SqlPassword) web.image.repository=$(AzureContainerRegistryServer) sql.image.repository=$(AzureContainerRegistryServer)`
+  - Arguments = `--set sql.password=$(SqlPassword) imageCredentials.registry=$(RegistryLoginServer) imageCredentials.username=$(RegistryUserName) imageCredentials.password=$(RegistryPassword)`
 
 ![VSTS CD](./imgs/VSTS_CD.PNG)
 
@@ -266,8 +268,8 @@ oc get route --namespace <your-namespace>
 # OSBA
 
 Prerequisities:
-- You need an OpenShift Origin or Container Platform cluster
-- You need to [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
+- An OpenShift Origin or Container Platform cluster
+- To [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
 
 From the OCP Service Catalog you should be able to browse and use the different Azure APIs:
 
