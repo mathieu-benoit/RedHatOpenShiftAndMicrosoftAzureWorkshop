@@ -210,8 +210,7 @@ The goal here is to deploy both images from ACR: SQL and Web on a given OpenShif
 Prerequisities:
 - An OpenShift Origin or Container Platform cluster
 - A VSTS account and project
-- A Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images 
-- FIXME - To create a Service Principal for accessing your Azure Container Registry (ACR) - FIXME
+- A Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
 
 **TIPS in OCP**: for the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
 - On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
@@ -220,6 +219,19 @@ Prerequisities:
 - Go to to your VSTS project and navigate to your `/_admin/_services` page. There, add a new "Kubernetes service endpoint" filling out the `Server URL field` and the `KubeConfig`. You need also to enable the `Accept Untrusted Certificates` checkbox.
   - *Important remark: by default this token will be valid for 24h, so you will have to repeat these 3 previous commands then.*
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
+
+We need to [grant the Kubernetes cluster to have access to the Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-aks). For the purpose of this demonstration, here are the command lines you have to run:
+```
+ACR=<your-acr-name>
+SERVICE_PRINCIPAL_NAME=acr-sp
+RegistryLoginServer=$(az acr show -n $ACR --query loginServer --output tsv)
+ACR_REGISTRY_ID=$(az acr show -n $ACR --query id --output tsv)
+RegistryPassword=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --role Reader --scopes $ACR_REGISTRY_ID --query password --output tsv)
+RegistryUserName=$(az ad sp show --id http://$SERVICE_PRINCIPAL_NAME --query appId --output tsv)
+```
+You will then map the corresponding `Registry*` values with the variables described just below.
+
+Here is the setup of the VSTS Release Definition:
 
 Variables:
 - RegistryLoginServer = your-acr-name.azurecr.io
@@ -241,13 +253,13 @@ High level steps:
   - Release Name = $(HelmDeploymentName)
   - Install if release not present = `true`
   - Wait = `true`
-  - Arguments = `--set sql.password=$(SqlPassword) imageCredentials.registry=$(RegistryLoginServer) imageCredentials.username=$(RegistryUserName) imageCredentials.password=$(RegistryPassword)`
+  - Arguments = `--set sql.password=$(SqlPassword) --set imageCredentials.registry=$(RegistryLoginServer) --set imageCredentials.username=$(RegistryUserName) --set imageCredentials.password=$(RegistryPassword) --set image.tag=$(Build.BuildId)`
 
 ![VSTS CD](./imgs/VSTS_CD.PNG)
 
 **TIPS in OCP**: to achieve that and for the purpose of this demo, you should:
-- "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly
-- "[Grant cluster-admin rights to the kube-system namespace’s default kube-system service account](https://blog.openshift.com/from-templates-to-openshift-helm-charts/)" - which is need for Tiller to work properly - by running this command: `oc adm policy add-cluster-role-to-user cluster-admin -z default --namespace kube-system`. You could also read [this other article](https://blog.openshift.com/getting-started-helm-openshift/) which mentions how to be granular and only add proper rights per namespace/project.
+- "[Enable Images to Run with `USER` in the `Dockerfile`](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly
+- "[Grant `cluster-admin` rights to the `kube-system` namespace’s default `kube-system` service account](https://blog.openshift.com/from-templates-to-openshift-helm-charts/)" - which is need for Tiller to work properly - by running this command: `oc adm policy add-cluster-role-to-user cluster-admin -z default --namespace kube-system`. You could also read [this other article](https://blog.openshift.com/getting-started-helm-openshift/) which mentions how to be granular and only add proper rights per namespace/project.
 
 Once this Release is succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
