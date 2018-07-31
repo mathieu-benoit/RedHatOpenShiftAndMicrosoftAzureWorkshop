@@ -1,0 +1,18 @@
+web:
+  image:
+    name: sql-autotune-dashboard
+    tag: latest
+  port: 80
+sql:
+  image:
+    name: my-mssql-linux
+    tag: latest
+  port: 1433
+  server: sql
+  database: WideWorldImporters
+  userid: SA
+  password: to_pass_as_parameter
+imageCredentials:
+  registry: to_pass_as_parameter
+  username: to_pass_as_parameter
+  password: to_pass_as_parameter

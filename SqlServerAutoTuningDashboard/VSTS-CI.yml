@@ -7,36 +7,50 @@ steps:
 - task: Docker@0
   displayName: Build Web image
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryConnection: MyDockerHub
     dockerFile: 'SqlServerAutoTuningDashboard/Dockerfile-Web'
     defaultContext: false
     context: SqlServerAutoTuningDashboard
-    imageName: 'mabenoit/sql-autotune-dashboard:$(Build.BuildId)'
+    imageName: 'sql-autotune-dashboard:$(Build.BuildId)'
     includeLatestTag: true
+    qualifyImageName: true
 - task: Docker@0
   displayName: Push Web image
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryConnection: MyDockerHub
     action: 'Push an image'
-    imageName: 'mabenoit/sql-autotune-dashboard:$(Build.BuildId)'
+    imageName: 'sql-autotune-dashboard:$(Build.BuildId)'
     includeLatestTag: true
+    qualifyImageName: true
 - task: Docker@0
   displayName: Build Sql image
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryConnection: MyDockerHub
     dockerFile: 'SqlServerAutoTuningDashboard/Dockerfile-Sql'
     defaultContext: false
     context: SqlServerAutoTuningDashboard
-    imageName: 'mabenoit/my-mssql-linux:$(Build.BuildId)'
+    imageName: 'my-mssql-linux:$(Build.BuildId)'
     includeLatestTag: true
+    qualifyImageName: true
 - task: Docker@0
   displayName: Push Sql image
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryConnection: MyDockerHub
     action: 'Push an image'
-    imageName: 'mabenoit/my-mssql-linux:$(Build.BuildId)'
+    imageName: 'my-mssql-linux:$(Build.BuildId)'
     includeLatestTag: true
+    qualifyImageName: true
+- task: HelmDeploy@0
+  displayName: helm init
+  inputs:
+    command: init
+    upgradeTiller: false
+    arguments: '--client-only'
+- task: HelmDeploy@0
+  displayName: helm package
+  inputs:
+    command: package
+    chartPath: 'SqlServerAutoTuningDashboard/charts/autotuningdashboard'
+    save: false
+    destination: $(Build.ArtifactStagingDirectory)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: helm-chart'
+  inputs:
+    ArtifactName: 'helm-chart'
+    PathtoPublish: $(Build.ArtifactStagingDirectory)

@@ -2,7 +2,7 @@
 - [VM](#vm)
 - [Ansible](#ansible)
 - [Docker](#docker)
-- [VSTS](#vsts)
+- [VSTS, ACR and Helm](#vsts-acr-and-helm)
   - [Build](#build)
   - [Release](#release)
 - [OSBA](#osba)
@@ -14,9 +14,11 @@ This repository has been built to showcase some integrations between RedHat and 
 
 You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
 
-The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with OCP and then finally take advantage of your SQL database as a Service:
+The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with Kubernetes and a step further with OCP; and then finally take advantage of your SQL database as a Service:
 
 ![Modernization Journey Workflow](./imgs/Modernization_Journey_Workflow.png)
+
+Remark: the intent here is to use as much as possible Kubernetes API (CLI and manifest files) to interact with the OCP cluster to demonstrate how easily you could be up to speed with OCP with your Kubernetes skills. Furthermore, some extra OCP setup and config will be illustrated as needed.
 
 # VM
 
@@ -99,7 +101,7 @@ You could also look at [Michael's MSSQL role on Ansible Galaxy](https://galaxy.a
 # Docker
 
 Prerequisities:
-- Docker CE has to be installed on the RHEL7 VM
+- A Docker CE installed on the RHEL7 VM
 
 *Important note: for the purpose of this demo we deployed both images SQL and Web as Ubuntu based images. It works on RHEL. But for production workload on OpenShift/RedHat and for better support, more performance and security compliance, you will modify the based images to target rhel based images.*
 
@@ -167,7 +169,7 @@ docker build \
   .
 ```
 
-# VSTS
+# VSTS, ACR and Helm
 
 In this section you will see how you could build and deploy your web and sql Docker images into your OpenShift Container Platform (OCP) cluster via Visual Studio Team Services (VSTS).
 
@@ -178,8 +180,8 @@ In this section you will see how you could build and deploy your web and sql Doc
 The goal here is to build and push both images: SQL and Web in a private Azure Container Registry via VSTS and more specifically with VSTS Build.
 
 Prerequisities:
-- You need a VSTS account and project
-- You need a Connection endpoint in VSTS to your Azure Container Registry to be able to push your images built
+- A VSTS account and project
+- A Connection endpoint in VSTS to your Azure Container Registry (ACR) to be able to push your images built
 
 High level steps:
 - Agent queue: `Hosted Linux Preview`
@@ -187,7 +189,9 @@ High level steps:
 - Docker - Push Web image
 - Docker - Build Sql image
 - Docker - Push Sql image
-- Copy and publish Kubernetes' yml files as Build artifact for further deployments
+- Helm - init --client-only
+- Helm - package
+- Publish Helm chart as Artifact
 
 See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
 
@@ -199,17 +203,16 @@ PRE-PROD: [![PRE-PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373
 
 PROD: [![PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)
 
-The goal here is to deploy both images: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release. The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
+The goal here is to deploy both images from ACR: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release. The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
 
 ![VSTS CD PIPELINE](./imgs/VSTS_CD_PIPELINE.PNG)
 
 Prerequisities:
-- You need an OpenShift Origin or Container Platform cluster
-- You need a VSTS account and project
-- You need a Connection endpoint in VSTS to your Azure Container Registry to be able to create the associated secret in your OpenShift Kubernetes cluster
-- You need a Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images 
+- An OpenShift Origin or Container Platform cluster
+- A VSTS account and project
+- A Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
 
-For the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
+**TIPS in OCP**: for the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
 - On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
 - Run `oc login <server-url>`, and provide either a token or your username/password
 - Get the associated kube config file: `cat ~.kube/config` and keep the entire content, especially the one regarding this specific cluster if you have more than one.
@@ -217,49 +220,56 @@ For the last prerequisities above, *Connection endpoint in VSTS to your OpenShif
   - *Important remark: by default this token will be valid for 24h, so you will have to repeat these 3 previous commands then.*
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
+We need to [grant the Kubernetes cluster to have access to the Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-aks). For the purpose of this demonstration, here are the command lines you have to run:
+```
+ACR=<your-acr-name>
+SERVICE_PRINCIPAL_NAME=acr-sp
+RegistryLoginServer=$(az acr show -n $ACR --query loginServer --output tsv)
+ACR_REGISTRY_ID=$(az acr show -n $ACR --query id --output tsv)
+RegistryPassword=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --role Reader --scopes $ACR_REGISTRY_ID --query password --output tsv)
+RegistryUserName=$(az ad sp show --id http://$SERVICE_PRINCIPAL_NAME --query appId --output tsv)
+```
+You will then map the corresponding `Registry*` values with the variables described just below.
+
+Here is the setup of the VSTS Release Definition:
+
 Variables:
-- SqlDeployName = sql
-- WebDeployName = web
-- ACR_SERVER = your-acr-name.azurecr.io
+- RegistryLoginServer = your-acr-name.azurecr.io
+- RegistryUserName = your-acr-username-or-sp-clientid
+- RegistryPassword = your-acr-password-or-sp-password
+- HelmDeploymentName = autotuningdashboard
 - K8sNamespace = your-ocp-project
-- SQL_SERVER = sql
-- SQL_PORT = 1433
-- SQL_DATABASE = WideWorldImporters
-- SQL_USERID = SA
-- SQL_PASSWORD = your-password
+- SqlPassword = your-sql-password
 
 High level steps:
-- Replace tokens in **/*.yml
-  - Root directory = `$(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard`
-  - Target files = `**/*.yml`
-- kubectl apply - sql
-  - Command = `apply`
-  - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-sql.yml`
+- Helm - init
+  - Command = `init`
+  - Upgrade Tiller = `true`
+- Helm - install charts
   - Namespace = $(K8sNamespace)
-  - Secrets
-    - Azure Container Registry = your-acr
-    - Secret name = `acr-secret`
-- kubectl apply - web
-  - Command = `apply`
-  - Arguments = `-f $(System.DefaultWorkingDirectory)/SqlAutoTuneDashboard-ACR-CI/k8s-ymls/SqlServerAutoTuningDashboard/k8s-web.yml`
-  - Namespace = $(K8sNamespace)
-  - Secrets
-    - Azure Container Registry = your-acr
-    - Secret name = `acr-secret`
+  - Command = `upgrade`
+  - Chart Type = `File Path`
+  - Chart Path = `$(System.DefaultWorkingDirectory)/**/autotuningdashboard-*.tgz`
+  - Release Name = $(HelmDeploymentName)
+  - Install if release not present = `true`
+  - Wait = `true`
+  - Arguments = `--set sql.password=$(SqlPassword) --set imageCredentials.registry=$(RegistryLoginServer) --set imageCredentials.username=$(RegistryUserName) --set imageCredentials.password=$(RegistryPassword) --set image.tag=$(Build.BuildId)`
 
 ![VSTS CD](./imgs/VSTS_CD.PNG)
 
-*Note: to achieve that and for the purpose of this demo, you should "[Enable Images to Run with USER in the Dockerfile](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly.*
+**TIPS in OCP**: to achieve that and for the purpose of this demo, you should:
+- "[Enable Images to Run with `USER` in the `Dockerfile`](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly
+- "[Grant `cluster-admin` rights to the `kube-system` namespace’s default `kube-system` service account](https://blog.openshift.com/from-templates-to-openshift-helm-charts/)" - which is need for Tiller to work properly - by running this command: `oc adm policy add-cluster-role-to-user cluster-admin -z default --namespace kube-system`. You could also read [this other article](https://blog.openshift.com/getting-started-helm-openshift/) which mentions how to be granular and only add proper rights per namespace/project.
 
-Once this Release succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
+Once this Release is succesfully deployed/exececuted and for the purpose of this demo you should manually run this command to initialize properly the database:
 ```
-SQL_POD=$(kubectl get pods -l name=sql -n <your-namespace> -o jsonpath='{.items[0].metadata.name}')
+SQL_POD=$(kubectl get pods -l app=sql -n <your-namespace> -o jsonpath='{.items[0].metadata.name}')
 kubectl exec \
   $SQL_POD \
   /usr/share/wwi-db-setup/init-and-restore-db.sh
 ```
 
-You could now expose the web dashboard app by creating a `Route` and then hitting it's associated/generated `HOST/PORT`:
+**TIPS in OCP**: to be able to publicly browse your web app just deployed you will have to create a `Route` and then hitting it's associated/generated `HOST/PORT`. For that you will have to run these commands:
 ```
 oc expose svc/web --name=web --namespace <your-namespace>
 oc get route --namespace <your-namespace>
@@ -270,8 +280,8 @@ oc get route --namespace <your-namespace>
 # OSBA
 
 Prerequisities:
-- You need an OpenShift Origin or Container Platform cluster
-- You need to [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
+- An OpenShift Origin or Container Platform cluster
+- To [install OSBA in your OpenShift cluster](https://github.com/Azure/open-service-broker-azure#openshift-project-template)
 
 From the OCP Service Catalog you should be able to browse and use the different Azure APIs:
 
@@ -286,9 +296,10 @@ From there let's provision an `Azure SQL Database` (Server + Database). After pr
 - [How to prepare a Red Hat-based virtual machine for Azure](https://azure.microsoft.com/en-us/resources/how-to-prepare-a-red-hat-based-virtual-machine-for-azure)
 - [Why switch to SQL Server 2017 on Linux?](https://info.microsoft.com/top-six-reasons-companies-make-the-move-to-sql-server-2017-register.html)
 - [Install SQL Server 2017 on RedHat 7](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
-- [Enhancing DevOps with SQL Server on Linux](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
+- [Enhancing DevOps with SQL Server on Linux Container](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
 - [Provisioning OCP on Azure with Ansible](https://galaxy.ansible.com/michaellessard/mssql/)
+- [From Templates to Openshift Helm Charts](https://blog.openshift.com/from-templates-to-openshift-helm-charts/)
 - [Open Service Broker for Azure](https://osba.sh/)
 - [Announcing .NET Core 2.1 for Red Hat Platforms](https://developers.redhat.com/blog/2018/06/14/announcing-net-core-2-1-for-red-hat-platforms/)
 - [Remotely Debug an ASP.NET Core Container Pod on OpenShift with Visual Studio](https://developers.redhat.com/blog/2018/06/13/remotely-debug-asp-net-core-container-pod-on-openshift-with-visual-studio/)
