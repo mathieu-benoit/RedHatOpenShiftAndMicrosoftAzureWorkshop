@@ -252,6 +252,7 @@ High level steps:
   - Chart Path = `$(System.DefaultWorkingDirectory)/**/autotuningdashboard-*.tgz`
   - Release Name = $(HelmDeploymentName)
   - Install if release not present = `true`
+  - Force = `true`
   - Wait = `true`
   - Arguments = `--set sql.password=$(SqlPassword) --set imageCredentials.registry=$(RegistryLoginServer) --set imageCredentials.username=$(RegistryUserName) --set imageCredentials.password=$(RegistryPassword) --set image.tag=$(Build.BuildId)`
 
