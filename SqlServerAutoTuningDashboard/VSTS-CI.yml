@@ -47,10 +47,11 @@ steps:
   inputs:
     command: package
     chartPath: 'SqlServerAutoTuningDashboard/charts/autotuningdashboard'
+    chartVersion: '$(Build.BuildId)'
     save: false
     destination: $(Build.ArtifactStagingDirectory)
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: helm-chart'
+  displayName: Publish Artifact: helm-chart
   inputs:
     ArtifactName: 'helm-chart'
     PathtoPublish: $(Build.ArtifactStagingDirectory)
