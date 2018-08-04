@@ -27,9 +27,15 @@ spec:
         - name: ConnectionStrings_Database
           value: {{ .Values.sql.database }}
         - name: ConnectionStrings_UserId
-          value: {{ .Values.sql.userid }}
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: userid
         - name: ConnectionStrings_Password
-          value: {{ .Values.sql.password }}
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: password
         ports:
         - containerPort: {{ .Values.web.port }}
           name: web

@@ -22,7 +22,10 @@ spec:
         - name: ACCEPT_EULA
           value: 'Y'
         - name: SA_PASSWORD
-          value: {{ .Values.sql.password }}
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: password
         ports:
         - containerPort: {{ .Values.sql.port }}
           name: sql
