@@ -189,6 +189,7 @@ High level steps:
 - Docker - Push Web image
 - Docker - Build Sql image
 - Docker - Push Sql image
+- Install Helm
 - Helm - init --client-only
 - Helm - package
 - Publish Helm chart as Artifact
@@ -242,6 +243,9 @@ Variables:
 - SqlPassword = your-sql-password
 
 High level steps:
+- Install Helm 2.9.1
+  - Helm Version Spec = `2.9.1`
+  - Check for latest version of Helm = `true`
 - Helm - init
   - Command = `init`
   - Upgrade Tiller = `true`
