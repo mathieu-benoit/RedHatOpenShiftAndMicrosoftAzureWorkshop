@@ -304,3 +304,4 @@ From there let's provision an `Azure SQL Database` (Server + Database). After pr
 - [Open Service Broker for Azure](https://osba.sh/)
 - [Announcing .NET Core 2.1 for Red Hat Platforms](https://developers.redhat.com/blog/2018/06/14/announcing-net-core-2-1-for-red-hat-platforms/)
 - [Remotely Debug an ASP.NET Core Container Pod on OpenShift with Visual Studio](https://developers.redhat.com/blog/2018/06/13/remotely-debug-asp-net-core-container-pod-on-openshift-with-visual-studio/)
+- [SQL Server on Linux and Containers labs](https://github.com/Microsoft/sqllinuxlabs)
