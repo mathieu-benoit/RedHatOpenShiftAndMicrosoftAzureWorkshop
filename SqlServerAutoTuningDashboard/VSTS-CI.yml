@@ -37,9 +37,9 @@ steps:
     includeLatestTag: true
     qualifyImageName: true
 - task: HelmInstaller@0
-  displayName: Install Helm 2.9.1
+  displayName: Install Helm 2.10.0
   inputs:
-    helmVersion: 2.9.1
+    helmVersion: 2.10.0
     checkLatestHelmVersion: true
 - task: HelmDeploy@0
   displayName: helm init --client-only

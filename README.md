@@ -243,8 +243,8 @@ Variables:
 - SqlPassword = your-sql-password
 
 High level steps:
-- Install Helm 2.9.1
-  - Helm Version Spec = `2.9.1`
+- Install Helm 2.10.0
+  - Helm Version Spec = `2.10.0`
   - Check for latest version of Helm = `true`
 - Helm - init
   - Command = `init`
