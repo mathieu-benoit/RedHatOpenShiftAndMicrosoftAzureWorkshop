@@ -2,7 +2,7 @@
 - [VM](#vm)
 - [Ansible](#ansible)
 - [Docker](#docker)
-- [VSTS, ACR and Helm](#vsts-acr-and-helm)
+- [Azure DevOps, ACR and Helm](#azure-devops-acr-and-helm)
   - [Build](#build)
   - [Release](#release)
 - [OSBA](#osba)
@@ -10,7 +10,7 @@
 
 # Context
 
-This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL75 VM, ASP.NET Core 2.1, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Visual Studio Team Services (VSTS), Open Service Broker for Azure (OSBA), etc.
+This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL75 VM, ASP.NET Core 2.1, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Azure DevOps (formerly known as VSTS), Open Service Broker for Azure (OSBA), etc.
 
 You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
 
@@ -169,19 +169,19 @@ docker build \
   .
 ```
 
-# VSTS, ACR and Helm
+# Azure DevOps, ACR and Helm
 
-In this section you will see how you could build and deploy your web and sql Docker images into your OpenShift Container Platform (OCP) cluster via Visual Studio Team Services (VSTS).
+In this section you will see how you could build and deploy your web and sql Docker images into your OpenShift Container Platform (OCP) cluster via Azure DevOps.
 
 ## Build
 
-[![Build Status](https://mabenoit-ms.visualstudio.com/_apis/public/build/definitions/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/52/badge)](https://mabenoit-ms.visualstudio.com/_apis/public/build/definitions/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/52/badge)
+[![Build status](https://dev.azure.com/mabenoit-ms/OpenShiftOnAzure/_apis/build/status/SqlAutoTuneDashboard-ACR-CI)](https://dev.azure.com/mabenoit-ms/OpenShiftOnAzure/_build/latest?definitionId=52)
 
-The goal here is to build and push both images: SQL and Web in a private Azure Container Registry via VSTS and more specifically with VSTS Build.
+The goal here is to build and push both images: SQL and Web in a private Azure Container Registry via Azure DevOps Pipelines.
 
 Prerequisities:
-- A VSTS account and project
-- A Connection endpoint in VSTS to your Azure Container Registry (ACR) to be able to push your images built
+- An Azure DevOps account and project
+- A Connection endpoint in Azure DevOps to your Azure Container Registry (ACR) to be able to push your images built
 
 High level steps:
 - Agent queue: `Hosted Linux Preview`
@@ -194,30 +194,30 @@ High level steps:
 - Helm - package
 - Publish Helm chart as Artifact
 
-See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/VSTS-CI.yml).
+See the details of this [build definition in YAML file here](./SqlServerAutoTuningDashboard/AzureDevOps-CI.yml).
 
-![VSTS CI](./imgs/VSTS_CI.PNG)
+![Azure DevOps CI](./imgs/AzureDevOps_CI.PNG)
 
 ## Release
 
-PRE-PROD: [![PRE-PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/6)](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/6)
+PRE-PROD: [![PRE-PROD Status](https://vsrm.dev.azure.com/mabenoit-ms/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/6)](https://vsrm.dev.azure.com/mabenoit-ms/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/6)
 
-PROD: [![PROD Status](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)](https://rmsprodscussu1.vsrm.visualstudio.com/Ae373a2ff-a162-446f-b7ec-415465e9e56c/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)
+PROD: [![PROD Status](https://vsrm.dev.azure.com/mabenoit-ms/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)](https://vsrm.dev.azure.com/mabenoit-ms/_apis/public/Release/badge/f2b899c8-a46f-4300-a9fd-cc3bd7f6f15e/4/8)
 
-The goal here is to deploy both images from ACR: SQL and Web on a given OpenShift Cluster via VSTS and more specifically with VSTS Release. The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
+The goal here is to deploy both images from ACR: SQL and Web on a given OpenShift Cluster via Azure DevOps Pipelines (Release). The first environment `PRE-PROD` will be automatically provisioned in continuous integration/delivery whereas then the `PROD` environment will need manual approval.
 
-![VSTS CD PIPELINE](./imgs/VSTS_CD_PIPELINE.PNG)
+![AzureDevOps CD PIPELINE](./imgs/AzureDevOps_CD_PIPELINE.PNG)
 
 Prerequisities:
 - An OpenShift Origin or Container Platform cluster
-- A VSTS account and project
-- A Connection endpoint in VSTS to your OpenShift Kubernetes cluster to be able to deploy your Docker images
+- A Azure DevOps account and project
+- A Connection endpoint in Azure DevOps to your OpenShift Kubernetes cluster to be able to deploy your Docker images
 
-**TIPS in OCP**: for the last prerequisities above, *Connection endpoint in VSTS to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
+**TIPS in OCP**: for the last prerequisities above, *Connection endpoint in Azure DevOps to your OpenShift Kubernetes cluster*, here are the steps to achieve this:
 - On your local machine, install the [OpenShift command line interface (CLI)](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html)
 - Run `oc login <server-url>`, and provide either a token or your username/password
 - Get the associated kube config file: `cat ~.kube/config` and keep the entire content, especially the one regarding this specific cluster if you have more than one.
-- Go to to your VSTS project and navigate to your `/_admin/_services` page. There, add a new "Kubernetes service endpoint" filling out the `Server URL field` and the `KubeConfig`. You need also to enable the `Accept Untrusted Certificates` checkbox.
+- Go to to your Azure DevOps project and navigate to your `/_admin/_services` page. There, add a new "Kubernetes service endpoint" filling out the `Server URL field` and the `KubeConfig`. You need also to enable the `Accept Untrusted Certificates` checkbox.
   - *Important remark: by default this token will be valid for 24h, so you will have to repeat these 3 previous commands then.*
 - If you try out the "Verify connection" action you will get an error, ignore it, and click on the `OK` button
 
@@ -232,7 +232,7 @@ RegistryUserName=$(az ad sp show --id http://$SERVICE_PRINCIPAL_NAME --query app
 ```
 You will then map the corresponding `Registry*` values with the variables described just below.
 
-Here is the setup of the VSTS Release Definition:
+Here is the setup of the Azure DevOps Pipelines (Release) Definition:
 
 Variables:
 - RegistryLoginServer = your-acr-name.azurecr.io
@@ -260,7 +260,7 @@ High level steps:
   - Wait = `true`
   - Arguments = `--set sql.password=$(SqlPassword) --set imageCredentials.registry=$(RegistryLoginServer) --set imageCredentials.username=$(RegistryUserName) --set imageCredentials.password=$(RegistryPassword) --set image.tag=$(Build.BuildId)`
 
-![VSTS CD](./imgs/VSTS_CD.PNG)
+![Azure DevOps CD](./imgs/AzureDevOps_CD.PNG)
 
 **TIPS in OCP**: to achieve that and for the purpose of this demo, you should:
 - "[Enable Images to Run with `USER` in the `Dockerfile`](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)" per namespace/project to have these images running properly
