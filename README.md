@@ -258,7 +258,7 @@ High level steps:
   - Install if release not present = `true`
   - Force = `true`
   - Wait = `true`
-  - Arguments = `--set sql.password=$(SqlPassword) --set imageCredentials.registry=$(RegistryLoginServer) --set imageCredentials.username=$(RegistryUserName) --set imageCredentials.password=$(RegistryPassword) --set image.tag=$(Build.BuildId)`
+  - Arguments = `--set sql.password=$(SqlPassword) --set imageCredentials.registry=$(RegistryLoginServer) --set imageCredentials.username=$(RegistryUserName) --set imageCredentials.password=$(RegistryPassword) --set web.image.tag=$(Build.BuildId)`
 
 ![Azure DevOps CD](./imgs/AzureDevOps_CD.PNG)
 
