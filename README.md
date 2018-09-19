@@ -12,7 +12,9 @@
 
 This repository has been built to showcase some integrations between RedHat and Microsoft Azure: RHEL75 VM, ASP.NET Core 2.1, SQL Server on Linux, Docker, Azure Container Registry (ACR), OpenShift Container Platform (OCP), Azure DevOps (formerly known as VSTS), Open Service Broker for Azure (OSBA), etc.
 
-You could find [here the presentations](http://bit.ly/14juin2018) (in French) we presented in Quebec city on June, 14 2018.
+Here are the associated presentations we have delivered with this content:
+- [Montreal, Canada - September, 19 2018](http://bit.ly/19-09-2018) (in English)
+- [Quebec city, Canada - June 14 2018](http://bit.ly/14juin2018) (in French)
 
 The goal is demonstrate a typical flow of a modernization journey: from on-premise, to public cloud IaaS, then going more agile with Containers, to leverage more platform capabilities with Kubernetes and a step further with OCP; and then finally take advantage of your SQL database as a Service:
 
