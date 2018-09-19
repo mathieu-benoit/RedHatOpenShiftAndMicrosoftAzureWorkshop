@@ -254,7 +254,7 @@ High level steps:
   - Command = `upgrade`
   - Chart Type = `File Path`
   - Chart Path = `$(System.DefaultWorkingDirectory)/**/autotuningdashboard-*.tgz`
-  - Release Name = $(HelmDeploymentName)
+  - Release Name = $(HelmDeploymentName)-$(K8sNamespace)
   - Install if release not present = `true`
   - Force = `true`
   - Wait = `true`
