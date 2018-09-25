@@ -1,17 +1,26 @@
-version: "1"
+version: '3'
 services:
-    web:
-        build: .
-        dockerfile: Dockerfile-Web
-        ports:
-            - "5000:5000"
-        depends_on:
-            - db
-    db:
-        build: .
-        dockerfile: Dockerfile-Sql
-        environment:
-            SA_PASSWORD: "YOUR_STRONG_PASSWORD"
-            ACCEPT_EULA: "Y"
-        ports:
-            - "1433:1433"
+  dashboard-sql:
+    build: .
+    dockerfile: Dockerfile-Sql
+    container_name: dashboard-sql
+    environment:
+        SA_PASSWORD: "YOUR_STRONG_PASSWORD"
+        ACCEPT_EULA: "Y"
+    ports:
+        - "1433:1433"
+
+  dashboard-web:
+    build: .
+    dockerfile: Dockerfile-Web
+    container_name: dashboard-web
+    environment:
+      ConnectionStrings_Server: dashboard-sql
+      ConnectionStrings_Port: 1433
+      ConnectionStrings_Database: WideWorldImporters
+      ConnectionStrings_UserId: SA
+      ConnectionStrings_Password: "<your-strong-password>"
+    ports:
+        - "80:80"
+    depends_on:
+        - dashboard-sql
