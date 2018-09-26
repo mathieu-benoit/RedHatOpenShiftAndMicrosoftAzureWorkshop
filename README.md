@@ -303,6 +303,7 @@ From there let's provision an `Azure SQL Database` (Server + Database). After pr
 - [How to prepare a Red Hat-based virtual machine for Azure](https://azure.microsoft.com/en-us/resources/how-to-prepare-a-red-hat-based-virtual-machine-for-azure)
 - [Why switch to SQL Server 2017 on Linux?](https://info.microsoft.com/top-six-reasons-companies-make-the-move-to-sql-server-2017-register.html)
 - [Install SQL Server 2017 on RedHat 7](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-linux-2017)
+- [Running Microsoft SQL Server on Red Hat OpenShift](https://developers.redhat.com/blog/2018/09/25/sql-server-on-openshift/)
 - [Enhancing DevOps with SQL Server on Linux Container](https://alwaysupalwayson.blogspot.com/2018/06/enhancing-devops-with-sql-server-on.html)
 - [OpenShift on Azure installation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
 - [Provisioning OCP on Azure with Ansible](https://galaxy.ansible.com/michaellessard/mssql/)
