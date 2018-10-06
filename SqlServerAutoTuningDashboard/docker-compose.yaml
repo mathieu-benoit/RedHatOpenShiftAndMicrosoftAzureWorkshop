@@ -15,11 +15,11 @@ services:
     dockerfile: Dockerfile-Web
     container_name: dashboard-web
     environment:
-      ConnectionStrings_Server: dashboard-sql
-      ConnectionStrings_Port: 1433
-      ConnectionStrings_Database: WideWorldImporters
-      ConnectionStrings_UserId: SA
-      ConnectionStrings_Password: "<your-strong-password>"
+      "ConnectionStrings:DefaultConnection:Server": dashboard-sql
+      "ConnectionStrings:DefaultConnection:Port": 1433
+      "ConnectionStrings:DefaultConnection:Database": WideWorldImporters
+      "ConnectionStrings:DefaultConnection:UserId": SA
+      "ConnectionStrings:DefaultConnection:Password": "<your-strong-password>"
     ports:
         - "80:80"
     depends_on:
