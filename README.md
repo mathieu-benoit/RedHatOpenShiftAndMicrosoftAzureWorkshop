@@ -150,11 +150,11 @@ docker pull mabenoit/sql-autotune-dashboard:latest
 Run the Docker image from the public image:
 ```
 docker run \
-  -e 'ConnectionStrings_Server=FIXME' \
-  -e 'ConnectionStrings_Port=1433' \
-  -e 'ConnectionStrings_Database=WideWorldImporters' \
-  -e 'ConnectionStrings_UserId=SA' \
-  -e 'ConnectionStrings_Password=<sa-password>' \
+  -e 'ConnectionStrings:DefaultConnection:Server=FIXME' \
+  -e 'ConnectionStrings:DefaultConnection:Port=1433' \
+  -e 'ConnectionStrings:DefaultConnection:Database=WideWorldImporters' \
+  -e 'ConnectionStrings:DefaultConnection:UserId=SA' \
+  -e 'ConnectionStrings:DefaultConnection:Password=<sa-password>' \
   -p 80:80 \
   --name web \
   -d mabenoit/sql-autotune-dashboard:latest
