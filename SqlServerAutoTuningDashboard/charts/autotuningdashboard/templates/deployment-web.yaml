@@ -20,18 +20,18 @@ spec:
       - image: {{ .Values.imageCredentials.registry }}/{{ .Values.web.image.name }}:{{ .Values.web.image.tag }}
         name: web
         env:
-        - name: ConnectionStrings_Server
+        - name: ConnectionStrings__DefaultConnection__Server
           value: {{ .Values.sql.server }}
-        - name: ConnectionStrings_Port
+        - name: ConnectionStrings__DefaultConnection__Port
           value: '{{ .Values.sql.port }}'
-        - name: ConnectionStrings_Database
+        - name: ConnectionStrings__DefaultConnection__Database
           value: {{ .Values.sql.database }}
-        - name: ConnectionStrings_UserId
+        - name: ConnectionStrings__DefaultConnection__UserId
           valueFrom:
             secretKeyRef:
               name: sql-secret
               key: userid
-        - name: ConnectionStrings_Password
+        - name: ConnectionStrings__DefaultConnection__Password
           valueFrom:
             secretKeyRef:
               name: sql-secret
